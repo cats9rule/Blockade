@@ -11,7 +11,6 @@ class Game:
         self.player1_start = starting_positions_p1
         self.player2_start = starting_positions_p2
         self.number_of_walls = initial_wall_count
-        self.is_p1_move = is_player1_first
         self.is_p2_computer = is_player2_computer
     
     def start_game(self):
@@ -24,6 +23,9 @@ class Game:
 
     def draw_board(self, window):
         #TODO: implement drawing table based on self.table_dimensions and starting positions
+
+        
+
         return
 
     def draw_players(self, window):

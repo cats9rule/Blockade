@@ -1,9 +1,17 @@
 class State:
+<<<<<<< HEAD
     def __init__(self, player1_positions: PlayerPositions, player2_positions: PlayerPositions, wall_positions: list[WallPosition], is_p1_on_move: bool):
         self.player1_positions = player1_positions
         self.player2_positions = player2_positions
         self.wall_positions = wall_positions
         self.is_player1_move = is_p1_on_move
+=======
+    def __init__(self, player1_positions: PlayerPositions, player2_positions: PlayerPositions, wall_positions: list[WallPosition], is_player1_on_move: bool):
+        self.player1_positions = player1_positions
+        self.player2_positions = player2_positions
+        self.wall_positions = wall_positions
+        self.is_player1_playing = is_player1_on_move
+>>>>>>> eb9ffbd (update)
 
 class PlayerPositions:
     def __init__(self, x1, y1, x2, y2):
@@ -27,3 +35,4 @@ class WallPosition:
         self.x = x
         self.y = y
         self.isGreen = isGreen
+

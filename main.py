@@ -1,13 +1,11 @@
 import pygame
 import colors
+import constants
 
-#TODO: move code to game class
-WIDTH, HEIGHT = 800, 800
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
 pygame.display.set_caption("Blockade")
-FPS = 60
 def draw_window():
-    WIN.fill(colors.BACKGROUND)
+    WIN.fill(colors.BACKGROUND_DARK)
     pygame.display.update()
 
 
@@ -15,7 +13,7 @@ def main():
     clock = pygame.time.Clock() 
     run = True
     while run:
-        clock.tick(FPS)
+        clock.tick(constants.FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False

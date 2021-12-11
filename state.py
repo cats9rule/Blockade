@@ -1,8 +1,9 @@
 class State:
-    def __init__(self, player1_positions: PlayerPositions, player2_positions: PlayerPositions, wall_positions: list[WallPosition]):
+    def __init__(self, player1_positions: PlayerPositions, player2_positions: PlayerPositions, wall_positions: list[WallPosition], is_p1_on_move: bool):
         self.player1_positions = player1_positions
         self.player2_positions = player2_positions
         self.wall_positions = wall_positions
+        self.is_player1_move = is_p1_on_move
 
 class PlayerPositions:
     def __init__(self, x1, y1, x2, y2):

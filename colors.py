@@ -1,3 +1,5 @@
+# module containing defined colors for game
+
 BACKGROUND_DARK = (38, 41, 46)            # dark gray
 BACKGROUND_LIGHT = (255, 245, 232)        # cream white
 BACKGROUND_TABLE = (154, 150, 171)        # dark blue-gray

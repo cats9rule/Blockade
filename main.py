@@ -7,7 +7,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blockade")
 FPS = 60
 def draw_window():
-    WIN.fill(colors.BACKGROUND)
+    WIN.fill(colors.BACKGROUND_DARK)
     pygame.display.update()
 
 

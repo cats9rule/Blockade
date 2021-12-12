@@ -17,17 +17,19 @@ def draw_window(game):
 def main():
     clock = pygame.time.Clock() 
     run = True
-    p1_pos = PlayerPositions(4, 4, 8, 4)
-    p2_pos = PlayerPositions(4, 11, 8, 11)
+    p1_pos = PlayerPositions(3, 3, 7, 3)
+    p2_pos = PlayerPositions(3, 10, 7, 10)
     initial_state = State(p1_pos, p2_pos, [], True)
 
-    game = Game(initial_state, (22,28), p1_pos, p2_pos, 9, True, False)
+    game = Game(initial_state, (11,14), p1_pos, p2_pos, 9, True, False)
     while run:
         clock.tick(constants.FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                pos = pygame.mouse.get_pos()
+                print(game.board.event_onclick(pos[0], pos[1]))
         draw_window(game)
     
     pygame.quit()

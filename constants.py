@@ -1,7 +1,7 @@
 # module containing constants needed for game window
 
-WINDOW_WIDTH = 900
-WINDOW_HEIGHT = 900
-TABLE_CELL = 24
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 500
+TABLE_CELL = 20
 
 FPS = 60

@@ -1,7 +1,11 @@
 class State:
-    def __init__(self, player1_positions, player2_positions, wall_positions: list, is_p1_on_move: bool):
+    def __init__(self, player1_positions, player2_positions, wall_positions: list, p1_walls_left: tuple, p2_walls_left: tuple, is_p1_on_move: bool):
         self.player1_positions = player1_positions
         self.player2_positions = player2_positions
+        self.walls_left = {
+            "p1": p1_walls_left,
+            "p2": p2_walls_left
+        }
         self.wall_positions = wall_positions
         self.is_player1_move = is_p1_on_move
 
@@ -12,9 +16,14 @@ class PlayerPositions:
 
     def set_figure_position(self, figure_number: int, new_position: tuple):
         if figure_number == 1:
-            if self._figure2 != new_position: self._figure1 = new_position
+            if self._figure2 != new_position: 
+                self._figure1 = new_position
+                return True
         elif figure_number == 2:
-            if self._figure1 != new_position: self._figure2 = new_position
+            if self._figure1 != new_position: 
+                self._figure2 = new_position
+                return True
+        return False
     
     def get_figure_position(self, figure_number: int) -> tuple:
         if figure_number == 1:

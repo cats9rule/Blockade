@@ -19,9 +19,11 @@ def main():
     run = True
     p1_pos = PlayerPositions(3, 3, 7, 3)
     p2_pos = PlayerPositions(3, 10, 7, 10)
-    initial_state = State(p1_pos, p2_pos, [], True)
+    wall1 = WallPosition(2, 3, False)
+    wall2 = WallPosition(1, 4, True)
+    initial_state = State(p1_pos, p2_pos, [wall1, wall2], (9,9), (9,9), True)
 
-    game = Game(initial_state, (11,14), p1_pos, p2_pos, 9, True, False)
+    game = Game(initial_state, (22,28), p1_pos, p2_pos, 9, True, False)
     while run:
         clock.tick(constants.FPS)
         for event in pygame.event.get():

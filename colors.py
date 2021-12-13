@@ -14,8 +14,8 @@ PLAYER2_STARTTILE = (217, 217, 217)       # grayed white
 PLAYER2_FIGURE = (250, 250, 250)          # white
 
 
-WALL_BLUE = (160, 190, 250)               # sharp blue
-WALL_GREEN = (160, 250, 190)              # sharp green
+WALL_BLUE = (18, 109, 255)               # sharp blue
+WALL_GREEN = (45, 158, 0)              # sharp green
 
 TEXT_LIGHT = (235, 231, 221)              # yellowish white
 TEXT_DARK = (26, 27, 28)                  # darker gray

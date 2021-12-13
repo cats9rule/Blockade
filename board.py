@@ -26,6 +26,8 @@ class Board:
         self._player2_start_positions = p2_pos
         self.positionForTest = (-1, -1)
         self.selection_mode = SelectMode.SELECT_OFF
+        self.board_rect = None
+        self.board_surface = None
 
         self._cached_fonts = {}
         self._cached_text = {}
@@ -51,7 +53,7 @@ class Board:
     def get_p2_f2(self) -> tuple:
         return self._player2_start_positions.get_figure_position(2)
 
-    def draw_board(self, surface_to_draw_in, should_scale_to_surface: bool):
+    def draw_board(self, surface_to_draw_in, state, should_scale_to_surface: bool):
         dx = dy = self.cell_size = starting_x = starting_y = 0
         width = surface_to_draw_in.get_bounding_rect().width
         height = surface_to_draw_in.get_bounding_rect().height
@@ -71,16 +73,18 @@ class Board:
             starting_x, starting_y, 
             self.columns_count * self.cell_size, self.rows_count * self.cell_size
             )
-        board_surface = pygame.Surface((self.board_rect.width, self.board_rect.height))
-        board_surface.fill(colors.BACKGROUND_TABLE)
+        self.board_surface = pygame.Surface((self.board_rect.width, self.board_rect.height))
+        self.board_surface.fill(colors.BACKGROUND_TABLE)
         pygame.draw.rect(surface_to_draw_in, (255, 255, 255), self.board_rect, 6)
 
-        self.draw_starting_positions(board_surface, self.cell_size)
-        self.draw_grid(board_surface, self.cell_size)
+        self.draw_starting_positions(self.board_surface, self.cell_size)
+        self.draw_grid(self.board_surface, self.cell_size)
         self.draw_indices(surface_to_draw_in, self.cell_size, starting_x, starting_y, dx, dy)
-        surface_to_draw_in.blit(board_surface, (self.board_rect.x, self.board_rect.y))
+        if state != 0:
+            self.draw_players(self.board_surface, state, self.cell_size)
+        self.draw_walls(self.board_surface, state, self.cell_size)
+        surface_to_draw_in.blit(self.board_surface, (self.board_rect.x, self.board_rect.y))
         return
-
 
     def draw_starting_positions(self, surface, cell_size):
         for i in range(1,3):
@@ -133,13 +137,52 @@ class Board:
 
         for i in range(0, self.rows_count):
             text = self._create_text(str(hex(i+1).lstrip("0x").rstrip("L").upper()), ["Consolas"], math.floor(cell_size / 2), colors.TEXT_LIGHT)
-            surface.blit(text, (x, y - math.floor(text.get_height() / 2)))
-            surface.blit(text, (width + math.floor(text.get_width()), y - math.floor(text.get_height() / 2)))
+            surface.blit(text, (x - math.floor(text.get_width() / 2), y - math.floor(text.get_height() / 2)))
+            surface.blit(text, (width + dx, y - math.floor(text.get_height() / 2)))
             y += cell_size
         
         return
 
+    def draw_players(self, board_surface, state, cell_size):
+
+        width = board_surface.get_bounding_rect().width
+        height = board_surface.get_bounding_rect().height
+        player1_x1 = state.player1_positions.get_figure_position(1)[1] * cell_size + cell_size / 2
+        player1_y1 = state.player1_positions.get_figure_position(1)[0] * cell_size + cell_size / 2
+        player1_x2 = state.player1_positions.get_figure_position(2)[1] * cell_size + cell_size / 2
+        player1_y2 = state.player1_positions.get_figure_position(2)[0] * cell_size + cell_size / 2
+
+        pygame.draw.circle(board_surface, colors.PLAYER1_FIGURE, (player1_y1, player1_x1), cell_size / 2 - 3)
+        pygame.draw.circle(board_surface, colors.PLAYER1_FIGURE, (player1_x2, player1_y2), cell_size / 2 - 3)
+
+        player2_x1 = state.player2_positions.get_figure_position(1)[1] * cell_size + cell_size / 2
+        player2_y1 = state.player2_positions.get_figure_position(1)[0] * cell_size + cell_size / 2
+        player2_x2 = state.player2_positions.get_figure_position(2)[1] * cell_size + cell_size / 2
+        player2_y2 = state.player2_positions.get_figure_position(2)[0] * cell_size + cell_size / 2
+
+        pygame.draw.circle(board_surface, colors.PLAYER2_FIGURE, (player2_x1, player2_y1), cell_size / 2 - 3)
+        pygame.draw.circle(board_surface, (0,0,0), (player2_x1, player2_y1), cell_size / 2 - 3, 1)
+        pygame.draw.circle(board_surface, colors.PLAYER2_FIGURE, (player2_x2, player2_y2), cell_size / 2 - 3)
+        pygame.draw.circle(board_surface, (0,0,0), (player2_x2, player2_y2), cell_size / 2 - 3, 1)
+
+        #window.blit(board_surface, (self.board.board_rect.x, self.board.board_rect.y))
+        return
     
+    def draw_walls(self, board_surface, state, cell_size):
+        for wall in state.wall_positions:
+            if wall.isGreen:
+                x = wall.x * cell_size + cell_size
+                y = wall.y * cell_size
+                length = cell_size * 2
+                pygame.draw.line(board_surface, colors.WALL_GREEN, (x, y), (x, y + length), 4)
+            else:
+                x = wall.x * cell_size + cell_size
+                y = wall.y * cell_size
+                length = cell_size * 2
+                pygame.draw.line(board_surface, colors.WALL_BLUE, (x, y), (x + length, y), 4)
+        return
+
+
     def event_onclick(self, x, y):
         row = column = -1
         if self.board_rect.collidepoint(x, y):

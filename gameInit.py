@@ -10,7 +10,7 @@ import colors
 import pygame
 import buttonstyles
 import board
-from board import Board
+from board import Board, SelectMode
 from textinput import TextInput
 from pygame_button import Button
 
@@ -35,6 +35,8 @@ class InitGame(object):
         self.text_input1 = None
         self.text_input2 = None
         self.text_input3 = None
+        self.positioning_player1 = True
+        self.position_init_board = None
 
     def do_nothing(self):
         return
@@ -200,8 +202,6 @@ class InitGame(object):
             self.text_input1 = TextInput(input_rect)
         self.text_input1.move((130, 98))
         self.text_input1.draw_input_box(surface)
-        # lab_8 = label.Label(self.text_input1.text, 36, colors.TEXT_LIGHT)
-        # lab_8.draw_label(surface, (500, 400))
 
         input_rect.width = 125
         if self.text_input2 is None:
@@ -224,13 +224,27 @@ class InitGame(object):
         lab7.draw_label(surface, (300, 310))
 
     def draw_screen_3(self, surface):
+        self.positioning_player1 = True
         lab = label.Label("Choose Player1 starting positions: ", 48, colors.TEXT_LIGHT)
 
-        #position_init_board = Board()
-
+        if(self.position_init_board is None):
+            self.position_init_board = Board(self.row_count, self.column_count, self.p1_start_positions, self.p2_start_positions)
+        self.position_init_board.draw_board(surface, False)
     
+        lab.draw_label(surface, (constants.WINDOW_WIDTH / 2 - lab.size[0] / 2, 30))
 
+    def draw_screen_4(self, surface):
+        self.positioning_player1 = False
+        lab = label.Label("Choose " + "Player2" if not self.is_p2_computer else "Computer" + " starting positions: ",
+                            48, colors.TEXT_LIGHT)
+        
+        if(self.position_init_board is None):
+            self.position_init_board = Board(self.row_count, self.column_count, self.p1_start_positions, self.p2_start_positions)
+        self.position_init_board.draw_board(surface, False)
 
+        lab.draw_label(surface, (constants.WINDOW_WIDTH / 2 - lab.size[0] / 2, 30))
+
+    #drawscreen_end
 
     def handle_mouse_event(self, pos, event):
         if self.btn_next.rect.collidepoint(pos[0], pos[1]):
@@ -248,7 +262,14 @@ class InitGame(object):
         if not self.text_input2 is None:
             self.text_input2.event_handle(event)
         if not self.text_input3 is None:    
-            self.text_input3.event_handle(event)    
+            self.text_input3.event_handle(event)
+        if not self.position_init_board is None:
+            if(pos != (-1, -1)):
+                if(self.positioning_player1):
+                    self.position_init_board.selection_mode = SelectMode.SELECT_INIT_P1F2 if (self.position_init_board.selection_mode == SelectMode.SELECT_INIT_P1F1) else SelectMode.SELECT_INIT_P1F1
+                else:
+                    self.position_init_board.selection_mode = SelectMode.SELECT_INIT_P2F2 if (self.position_init_board.selection_mode == SelectMode.SELECT_INIT_P2F1) else SelectMode.SELECT_INIT_P2F1
+                self.position_init_board.event_onclick(pos[0], pos[1])  
 
     def handle_keyboard_event(self, event):
         if (self.text_input1.active):
@@ -257,6 +278,20 @@ class InitGame(object):
             self.text_input2.event_handle(event)
         if (self.text_input3.active):
             self.text_input3.event_handle(event)
+
+    def handle_RETURN_event(self, event):
+        self.row_count = int(self.text_input1.text) if not (self.text_input1.text == '') else 0
+        self.column_count = int(self.text_input2.text) if not (self.text_input2.text == '') else 0
+        self.wall_count = int(self.text_input3.text) if not (self.text_input3.text == '') else 0
+
+        if(self.row_count > 22):
+            self.row_count = 22
+        if(self.column_count > 28):
+            self.column_count = 28
+        if(self.wall_count > 18 or self.wall_count < 9):
+            self.wall_count = 9
+
+        self.handle_keyboard_event(event)
 
     #handlers    
     def player2_is_player(self):

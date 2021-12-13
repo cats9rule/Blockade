@@ -28,7 +28,10 @@ def main():
                     GAME_INIT.handle_mouse_event(pos, event)
             if event.type == pygame.KEYDOWN:
                 if is_game_init:
-                    GAME_INIT.handle_keyboard_event(event)
+                    if (event.key == pygame.K_RETURN):
+                        GAME_INIT.handle_RETURN_event(event)
+                    else:
+                        GAME_INIT.handle_keyboard_event(event)
 
         draw_window()
     

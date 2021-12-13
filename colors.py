@@ -2,16 +2,16 @@
 
 BACKGROUND_DARK = (38, 41, 46)            # dark gray
 BACKGROUND_LIGHT = (255, 245, 232)        # cream white
-BACKGROUND_TABLE = (184, 184, 184)        # dark blue-gray
+BACKGROUND_TABLE = (154, 150, 171)        # dark blue-gray
 
 PLAYER_HUMAN = (255, 181, 234)            # light pink
 PLAYER_COMPUTER = (179, 207, 255)         # light blue
 
-PLAYER1_STARTTILE = (110, 110, 110)         # gray 
-PLAYER1_FIGURE = (38, 38, 38)             # dark gray
+PLAYER1_STARTTILE = (100, 100, 100)       # gray 
+PLAYER1_FIGURE = (30, 30, 30)             # dark gray
 
-PLAYER2_STARTTILE = (217, 217, 217)       # grayed white
-PLAYER2_FIGURE = (250, 250, 250)          # white
+PLAYER2_STARTTILE = (240, 240, 240)       # grayed white
+PLAYER1_FIGURE = (250, 250, 250)          # white
 
 
 WALL_BLUE = (160, 190, 250)               # sharp blue

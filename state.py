@@ -5,21 +5,15 @@ class PlayerPositions:
 
     def set_figure_position(self, figure_number: int, new_position: tuple):
         if figure_number == 1:
-            if self._figure2 != new_position: self._figure1 = new_position
+            self._figure1 = new_position
         elif figure_number == 2:
-            if self._figure1 != new_position: self._figure2 = new_position
+            self._figure2 = new_position
     
     def get_figure_position(self, figure_number: int) -> tuple:
         if figure_number == 1:
             return self._figure1
         elif figure_number == 2:
             return self._figure2
-    
-    def is_position_valid(self, figure_to_check) -> bool:
-        if figure_to_check == 1:
-            return self._figure1[0] > -1 and self._figure1[1] > -1
-        elif figure_to_check == 2:
-            return self._figure2[0] > -1 and self._figure2[1] > -1
 
 class WallPosition:
     def __init__(self, x: int, y: int, isGreen: bool):

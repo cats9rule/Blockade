@@ -7,7 +7,7 @@ import math
 
 class SelectMode:
     SELECT_OFF = 0
-    SELECT_INIT_P1F1 = 1
+    SELECT_INIT_P1F1 = 1    #igrac1 figura1
     SELECT_INIT_P1F2 = 2
     SELECT_INIT_P2F1 = 3
     SELECT_INIT_P2F2 = 4
@@ -29,7 +29,8 @@ class Board:
 
         self._cached_fonts = {}
         self._cached_text = {}
-
+#kad kreiras board-a prosledi konstruktoru broj redova i kolona
+#p1 i p2_pos stavljaju se player positions sa svim -1, -1, -1, -1
     def set_start_position(self, player_number, figure_number, x, y):
         if player_number == 1:
             self.player1_start_positions.set_figure_position(figure_number, (x,y))
@@ -50,7 +51,7 @@ class Board:
         return self._player2_start_positions.get_figure_position(1)
     def get_p2_f2(self) -> tuple:
         return self._player2_start_positions.get_figure_position(2)
-
+#pri crtanju tabele samo draw_board
     def draw_board(self, surface_to_draw_in, should_scale_to_surface: bool):
         dx = dy = self.cell_size = starting_x = starting_y = 0
         width = surface_to_draw_in.get_bounding_rect().width
@@ -139,7 +140,8 @@ class Board:
         
         return
 
-    
+# ako vrati tuple -1, -1 nije kliknuto u okviru boarda  
+#   
     def event_onclick(self, x, y):
         row = column = -1
         if self.board_rect.collidepoint(x, y):

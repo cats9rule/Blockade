@@ -1,5 +1,6 @@
 from f1n import get_initial_state
 from f1n import is_game_end
+from f1n import show_game
 
 
 def main():
@@ -21,6 +22,10 @@ def main():
         'figure': None
     }
 
-    while(not is_game_end(state, starting_pos)):
-        break
+    show_game(state, board_dim, starting_pos)
+
+    # while(not is_game_end(state, starting_pos)):
+    #     break
     return
+
+main()

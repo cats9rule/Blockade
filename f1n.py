@@ -2,12 +2,12 @@ import os
 
 # NOTE TO SELF: GREEN WALL IS VERTICAL!!!
 
-def get_initial_state(board_dim: tuple, wall_count: int, initial_positions: dict, playing_first: str) -> dict:
+def get_initial_state(wall_count: int, initial_positions: dict, playing_first: str) -> dict:
     """Returns state with initialized player positions, first player, walls left initialized to initial wall count, and empty placed walls list."""
     return {
         'player positions': initial_positions,
         'current player': playing_first,
-        'placed walls': [(4, 4, 'g'), (5, 3, 'b')],
+        'placed walls': [],
         'walls left': {
             'X': [wall_count, wall_count],
             'O': [wall_count, wall_count]
@@ -97,6 +97,7 @@ def show_player_stats(player_index: int, walls_left: tuple, is_current: bool) ->
     return output + '\n'
 
 def generate_table_string(board_dim: tuple) -> str:
+    """Makes a string representing the table without walls, figures or starting positions."""
     string = ''
     for row in range(0, board_dim[0] + 2):
         for col in range(0, board_dim[1] + 2):
@@ -118,18 +119,24 @@ def generate_table_string(board_dim: tuple) -> str:
     return string
 
 def insert_starting_positions(table_string: str, starting_positions: dict, board_dim: tuple) -> str:
+    """Inserts starting positions into string table where they belong. 
+    Returns string with inserted positions."""
     for key in starting_positions:
         for position in starting_positions[key]:
             table_string = insert_string_at_position(table_string, key, board_dim, position, False)
     return table_string
 
 def insert_figures(table_string: str, player_positions: dict, board_dim: tuple) -> str:
+    """Inserts player figures into string table on their positions. 
+    Returns string with inserted figures."""
     for key in player_positions:
         for i in range (1,3):
             table_string = insert_string_at_position(table_string, key + str(i), board_dim, player_positions[key][i-1], False)
     return table_string
 
 def insert_walls(table_string: str, walls: list, board_dim: tuple) -> str:
+    """Inserts walls into string table where they belong. 
+    Returns string with inserted walls."""
     for wall in walls:
         if wall[2] == 'g':
             table_string = insert_string_at_position(
@@ -144,14 +151,18 @@ def insert_walls(table_string: str, walls: list, board_dim: tuple) -> str:
     return table_string
 
 def insert_string_at_position(table_string: str, string_to_insert: str, board_dim: tuple, position: tuple, is_wall: bool) -> str:
+    """Inserts string_to_insert into table_string on position.
+    Can be used for inserting a vertical wall.
+    Returns table string."""
     index = (4 * (board_dim[1] + 2) + 1) * 2* position[0] + position[1] * 4 + (3 if is_wall else 1)
     return table_string[:index] + string_to_insert + table_string[index + len(string_to_insert):]
 
 def insert_horiz_wall(table_string: str, string_to_insert: str, board_dim: tuple, position: tuple) -> str:
+    """Inserts horizontal wall onto given position. Returns table string."""
     index = (4 * (board_dim[1] + 2) + 1) * 2 * position[0] + position[1] * 4 + 1 + 4 * (board_dim[1] + 2) + 1
     return table_string[:index] + string_to_insert + table_string[index + len(string_to_insert):]
 
-def check_figure_movement(state, figure_pos, figure_index, starting_pos, player, opponent, new_wall):
+def check_figure_movement(state: dict, figure_pos: tuple, figure_index: int, starting_pos: dict, player: str, opponent: str, new_wall: tuple) -> bool:
     old_pos = state['player positions'][player][figure_index]
     d_row = abs(old_pos[0] - figure_pos[0])
     d_col = abs(old_pos[1] - figure_pos[1])
@@ -166,9 +177,10 @@ def check_figure_movement(state, figure_pos, figure_index, starting_pos, player,
         checklist = get_blocking_figure_checklist(direction, starting_pos[opponent], figure_pos, other_figure)
         if any(checklist): return False
     if d_row + d_col > 2: return False 
-    return check_walls(state, direction, figure_pos, old_pos, new_wall)
+    return check_walls(state, direction, old_pos, new_wall)
     
-def check_walls(state:dict, direction: str, figure_pos:tuple, old_pos: tuple, new_wall: tuple) -> bool:
+def check_walls(state:dict, direction: str, old_pos: tuple, new_wall: tuple) -> bool:
+    #NOTE: direction: u (up), d (down), l (left), r (right), ul (up left), ur (up right), dl (down left), dr (down right)
     for wall in state['placed walls']:
         if not isinstance(new_wall, type(None)):
             if wall[0] == new_wall[0] and wall[1] == new_wall[1]: return False
@@ -197,10 +209,6 @@ def check_walls(state:dict, direction: str, figure_pos:tuple, old_pos: tuple, ne
         if direction == 'dr':
             if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
                 return False
-        
-
-    #TODO: proveriti da li zidovi blokiraju kretanje pesaka u datom direction
-    #NOTE: direction: u (up), d (down), l (left), r (right), ul (up left), ur (up right), dl (down left), dr (down right)
     return True
         
 

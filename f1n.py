@@ -7,7 +7,7 @@ def get_initial_state(board_dim: tuple, wall_count: int, initial_positions: dict
     return {
         'player positions': initial_positions,
         'current player': playing_first,
-        'placed walls': [],
+        'placed walls': [(4, 4, 'g'), (5, 3, 'b')],
         'walls left': {
             'X': [wall_count, wall_count],
             'O': [wall_count, wall_count]
@@ -35,10 +35,10 @@ def generate_next_state(state: dict, move: dict) -> dict:
     new_wall = move['wall']
     placed_walls = state['placed walls']
 
-    if isinstance(new_wall, None): 
-        placed_walls.add(new_wall)
+    if not isinstance(new_wall, type(None)): 
+        placed_walls.append(new_wall)
         walls_left = state['walls left']
-        walls_left[player][new_wall[2]] -= 1
+        walls_left[player][0 if new_wall[2] == 'g' else 1] -= 1
     
     return {
         'player positions': player_pos,
@@ -55,11 +55,11 @@ def validate_move(state: dict, move: dict, board_dim: tuple, starting_pos: dict)
     figure_index = move['figure'][2]
     figure_pos = (move['figure'][0], move['figure'][1])
 
-    if any([figure_pos[0] < 1, figure_pos[0] > board_dim, figure_pos[1] < 1, figure_pos[1] > board_dim[1]]): return False
-    if any([new_wall[0] < 1, new_wall[0] > board_dim[0] - 1, new_wall[1] < 1, new_wall[1] > board_dim[1] - 1]): return False
+    if any([figure_pos[0] < 1, figure_pos[0] > board_dim[0], figure_pos[1] < 1, figure_pos[1] > board_dim[1]]): return False
+    if not isinstance(new_wall, type(None)) and any([new_wall[0] < 1, new_wall[0] > board_dim[0] - 1, new_wall[1] < 1, new_wall[1] > board_dim[1] - 1]): return False
 
-    for player in state['player positions']:
-        for position in state['player positions'][player]:
+    for p in state['player positions']:
+        for position in state['player positions'][p]:
             if figure_pos[0] == position[0] and figure_pos[1] == position[1] and figure_pos not in starting_pos[opponent]: return False
 
     if not check_figure_movement(state, figure_pos, figure_index, starting_pos, player, opponent, new_wall):
@@ -170,17 +170,44 @@ def check_figure_movement(state, figure_pos, figure_index, starting_pos, player,
     
 def check_walls(state:dict, direction: str, figure_pos:tuple, old_pos: tuple, new_wall: tuple) -> bool:
     for wall in state['placed walls']:
-        if wall[0] == new_wall[0] and wall[1] == new_wall[1]: return False
+        if not isinstance(new_wall, type(None)):
+            if wall[0] == new_wall[0] and wall[1] == new_wall[1]: return False
+        if direction == 'l':
+            if wall[2] == 'g' and (wall[1] == old_pos[1] - 1 or wall[1] == old_pos[1] - 2) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
+                return False
+        if direction == 'r':
+            if wall[2] == 'g' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] + 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
+                return False
+        if direction == 'd':
+            if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] + 1):
+                return False
+        if direction == 'u':
+            if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] - 1 or wall[0] == old_pos[0] - 2):
+                return False
+            
+        if direction == 'ul':
+            if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0] - 1:
+                return False
+        if direction == 'ur':
+            if wall[1] == old_pos[1] and wall[0] == old_pos[0] - 1:
+                return False
+        if direction == 'dl':
+            if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0]:
+                return False
+        if direction == 'dr':
+            if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
+                return False
+        
 
     #TODO: proveriti da li zidovi blokiraju kretanje pesaka u datom direction
     #NOTE: direction: u (up), d (down), l (left), r (right), ul (up left), ur (up right), dl (down left), dr (down right)
-    return
+    return True
         
 
 def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
     direction = ""
-    if old_pos[0] > figure_pos[0]: direction += "d"
-    elif old_pos[0] < figure_pos[0]: direction += "u"
+    if old_pos[0] > figure_pos[0]: direction += "u"
+    elif old_pos[0] < figure_pos[0]: direction += "d"
     if old_pos[1] > figure_pos[1]: direction += "l"
     elif old_pos[1] < figure_pos[1]: direction += "r"
     return direction

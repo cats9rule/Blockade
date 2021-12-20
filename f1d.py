@@ -69,7 +69,6 @@ def board_dimensions():
 
 
 def positions(board: tuple):
-    """ kako glup jezik ja ne mogu da verujem """
 
     loop = True
     cls()
@@ -81,19 +80,19 @@ def positions(board: tuple):
         print("Time to choose starting positions. \nDon't forget, 2 figures can't have same starting positions!\n\n")
         x1 = pos("X", "1", board, starting_positions)
         x2 = pos("X", "2", board, starting_positions)
-        y1 = pos("Y", "1", board, starting_positions)
-        y2 = pos("Y", "2", board, starting_positions)
+        o1 = pos("O", "1", board, starting_positions)
+        o2 = pos("O", "2", board, starting_positions)
 
         starting_positions = {
             'X': [x1, x2],
-            'O': [y1, y2]
+            'O': [o1, o2]
         }
 
         x1_str = str(x1[0]) + ' - ' + str(x1[1])
         x2_str = str(x2[0]) + ' - ' + str(x2[1])
-        y1_str = str(y1[0]) + ' - ' + str(y1[1])
-        y2_str = str(y2[0]) + ' - ' + str(y2[1])
-        print("\n\nStarting positions are: " + "\nX1: " + x1_str + "\nX2: " + x2_str + "\nY1: " + y1_str + "\nY2: " + y2_str)
+        o1_str = str(o1[0]) + ' - ' + str(o1[1])
+        o2_str = str(o2[0]) + ' - ' + str(o2[1])
+        print("\n\nStarting positions are: " + "\nX1: " + x1_str + "\nX2: " + x2_str + "\nO1: " + o1_str + "\nO2: " + o2_str)
 
         are_you_sure = input("\nAre you sure? (y/n): ")
         if are_you_sure == "y":

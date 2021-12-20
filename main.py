@@ -1,23 +1,12 @@
 from os import X_OK
-from f1n import generate_next_state, get_initial_state, validate_move
-from f1n import is_game_end
-from f1n import show_game
-from f1d import define_initial_parameters, playing_first
+from faza1 import get_initial_state
+from faza1 import is_game_end
+from faza1 import show_game
+from faza1 import define_initial_parameters
 
 
 def main():
-
-    #TODO: call input functions to set initial parameters: playing_first, board_dim, starting_pos, starting_wall_count
-
     init_params = define_initial_parameters()
-
-    # playing_first = 'O'
-    # board_dim = (11, 14)
-    # starting_pos = {
-    #     'X': [(4, 4), (8, 4)],
-    #     'O': [(4, 11), (8, 11)]
-    # }
-    # starting_wall_count = 9
 
     playing_first = init_params["playing_first"]
     board_dim = init_params["board_dim"]
@@ -33,10 +22,9 @@ def main():
 
     show_game(state, board_dim, starting_pos)
 
-    #print("\n\n" + str(validate_move(state, move, board_dim, starting_pos)))
-
     # while(not is_game_end(state, starting_pos)):
     #     break
+
     return
 
 main()

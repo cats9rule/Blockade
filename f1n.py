@@ -62,7 +62,7 @@ def validate_move(state: dict, move: dict, board_dim: tuple, starting_pos: dict)
         for position in state['player positions'][player]:
             if figure_pos[0] == position[0] and figure_pos[1] == position[1] and figure_pos not in starting_pos[opponent]: return False
 
-    if not check_figure_movement(state, figure_pos, figure_index, starting_pos, player, opponent):
+    if not check_figure_movement(state, figure_pos, figure_index, starting_pos, player, opponent, new_wall):
         return False
     
     return True
@@ -151,7 +151,7 @@ def insert_horiz_wall(table_string: str, string_to_insert: str, board_dim: tuple
     index = (4 * (board_dim[1] + 2) + 1) * 2 * position[0] + position[1] * 4 + 1 + 4 * (board_dim[1] + 2) + 1
     return table_string[:index] + string_to_insert + table_string[index + len(string_to_insert):]
 
-def check_figure_movement(state, figure_pos, figure_index, starting_pos, player, opponent):
+def check_figure_movement(state, figure_pos, figure_index, starting_pos, player, opponent, new_wall):
     old_pos = state['player positions'][player][figure_index]
     d_row = abs(old_pos[0] - figure_pos[0])
     d_col = abs(old_pos[1] - figure_pos[1])
@@ -187,7 +187,7 @@ def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
 
 def get_blocking_figure_checklist(direction: str, opponent_start_pos: list, figure_pos: tuple, other_figure:tuple) -> list:
     checklist = list()
-    for position in starting_pos[opponent]:
+    for position in opponent_start_pos:
         checklist.append(not (direction == 'l' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] - 1)))
         checklist.append(not (direction == 'r' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] + 1)))
         checklist.append(not (direction == 'u' and position[0] == (figure_pos[0] - 1) and position[1] == figure_pos[1]))

@@ -1,9 +1,7 @@
-from os import X_OK
-from faza1 import get_initial_state
-from faza1 import is_game_end
-from faza1 import show_game
-from faza1 import define_initial_parameters
 
+from faza1 import cls, generate_next_state, get_initial_state, is_game_end, show_game, define_initial_parameters
+from f2n import get_winner, input_move
+import pyfiglet
 
 def main():
     init_params = define_initial_parameters()
@@ -19,12 +17,17 @@ def main():
         'wall': None,
         'figure': None
     }
-
     show_game(state, board_dim, starting_pos)
 
-    # while(not is_game_end(state, starting_pos)):
-    #     break
+    while(not is_game_end(state, starting_pos)):
+        move = input_move(state, board_dim, starting_pos)
+        state = generate_next_state(state, move)
+        show_game(state, board_dim, starting_pos)
 
+    winner = get_winner(state)
+    result = pyfiglet.figlet_format(f"Winner! {winner} won this game!")
+    cls()
+    print(result)
     return
 
 main()

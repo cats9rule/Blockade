@@ -1,4 +1,5 @@
 import os
+import copy
 
 def define_initial_parameters():
     ret_val = dict()
@@ -148,12 +149,12 @@ def wall_count():
 def get_initial_state(wall_count: int, initial_positions: dict, playing_first: str) -> dict:
     """Returns state with initialized player positions, first player, walls left initialized to initial wall count, and empty placed walls list."""
     return {
-        'player positions': initial_positions,
-        'current player': playing_first,
+        'player positions': copy.deepcopy(initial_positions),
+        'current player': copy.copy(playing_first),
         'placed walls': [],
         'walls left': {
-            'X': [wall_count, wall_count],
-            'O': [wall_count, wall_count]
+            'X': [copy.copy(wall_count), copy.copy(wall_count)],
+            'O': [copy.copy(wall_count), copy.copy(wall_count)]
         }
     }
     
@@ -173,14 +174,14 @@ def generate_next_state(state: dict, move: dict) -> dict:
     player = move['player']
     figure_index = move['figure'][2]
     figure_pos = (move['figure'][0], move['figure'][1])
-    player_pos = state['player positions']
+    player_pos = copy.deepcopy(state['player positions'])
     player_pos[player][figure_index] = figure_pos
     new_wall = move['wall']
-    placed_walls = state['placed walls']
+    placed_walls = copy.deepcopy(state['placed walls'])
+    walls_left = state['walls left']
 
     if not isinstance(new_wall, type(None)): 
         placed_walls.append(new_wall)
-        walls_left = state['walls left']
         walls_left[player][0 if new_wall[2] == 'g' else 1] -= 1
     
     return {
@@ -313,13 +314,14 @@ def check_figure_movement(state: dict, figure_pos: tuple, figure_index: int, sta
     other_figure = starting_pos[opponent][(figure_index + 1) % 2]
     checklist = []
 
+    if d_row + d_col > 2: return False 
+    
     if d_row + d_col == 1:
         for position in starting_pos[opponent]:
-            checklist.append(not (position[0] == figure_pos[0] and position[1] == figure_pos[1]))
-        if any(checklist): return False
-        checklist = get_blocking_figure_checklist(direction, starting_pos[opponent], figure_pos, other_figure)
-        if any(checklist): return False
-    if d_row + d_col > 2: return False 
+            checklist.append(position[0] != figure_pos[0] or position[1] != figure_pos[1])
+        if all(checklist): 
+            checklist = get_blocking_figure_checklist(direction, starting_pos[opponent], figure_pos, other_figure)
+            if all(checklist): return False
     return check_walls(state, direction, old_pos, new_wall)
     
 def check_walls(state:dict, direction: str, old_pos: tuple, new_wall: tuple) -> bool:

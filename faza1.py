@@ -204,9 +204,9 @@ def validate_move(state: dict, move: dict, board_dim: tuple, starting_pos: dict)
     figure_index = move['figure'][2]
     figure_pos = (move['figure'][0], move['figure'][1])
 
-    if any([figure_pos[0] < 1, figure_pos[0] > board_dim[0], figure_pos[1] < 1, figure_pos[1] > board_dim[1]]):
+    if is_figure_out_of_bounds(figure_pos, board_dim):
         return False
-    if not isinstance(new_wall, type(None)) and any([new_wall[0] < 1, new_wall[0] > board_dim[0] - 1, new_wall[1] < 1, new_wall[1] > board_dim[1] - 1]):
+    if not isinstance(new_wall, type(None)) and is_wall_out_of_bounds(new_wall, board_dim):
         return False
 
     for p in state['player positions']:
@@ -366,7 +366,6 @@ def check_walls(state: dict, direction: str, old_pos: tuple, new_wall: tuple) ->
             return False
     return True
 
-
 def is_hitting_wall(wall: tuple, old_pos: tuple, direction: str) -> bool:
     if direction == 'l':
         if wall[2] == 'g' and (wall[1] == old_pos[1] - 1 or wall[1] == old_pos[1] - 2) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
@@ -406,6 +405,16 @@ def is_walls_overlap(wall: tuple, new_wall: tuple) -> bool:
             return True
     return False
         
+def is_wall_out_of_bounds(new_wall: tuple, board_dim: tuple) -> bool:
+    if any([new_wall[0] < 1, new_wall[0] > board_dim[0] - 1, new_wall[1] < 1, new_wall[1] > board_dim[1] - 1]):
+        return True
+    else: return False
+
+def is_figure_out_of_bounds(figure_pos: tuple, board_dim: tuple) -> bool:
+    if any([figure_pos[0] < 1, figure_pos[0] > board_dim[0], figure_pos[1] < 1, figure_pos[1] > board_dim[1]]):
+        return True
+    else: return False
+    
         
 def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
     direction = ""

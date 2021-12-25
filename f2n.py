@@ -13,10 +13,10 @@ def input_move(state: dict, board_dim: tuple, starting_pos: dict) -> dict:
 
     while loop:
 
+        figure = input_figure()
         wall_pos = None
         if can_place_wall_g or can_place__wall_b:
             wall_pos = input_wall(can_place_wall_g, can_place__wall_b)
-        figure = input_figure()
 
         move = {
             'player': player,

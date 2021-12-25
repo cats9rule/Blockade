@@ -4,12 +4,16 @@ from f2n import get_winner, input_move
 import pyfiglet
 
 def main():
-    init_params = define_initial_parameters()
+    #init_params = define_initial_parameters()
 
-    playing_first = init_params["playing_first"]
-    board_dim = init_params["board_dim"]
-    starting_pos = init_params["starting_pos"]
-    starting_wall_count = init_params["starting_wall_count"]
+    playing_first = 'O' #init_params["playing_first"]
+    board_dim = (11, 14) #init_params["board_dim"]
+    starting_pos = {
+        'X': [(4, 4) , (8, 10)],
+        'O': [(4, 11) , (8, 11)]
+    } #init_params["starting_pos"]
+    starting_wall_count = 9 #init_params["starting_wall_count"]
+
 
     state = get_initial_state(starting_wall_count, starting_pos, playing_first)
     move = {

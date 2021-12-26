@@ -402,7 +402,66 @@ def is_hitting_wall(wall: tuple, old_pos: tuple, direction: str) -> bool:
         if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
             return True
     return False
-        
+
+def is_hitting_any_wall(placed_walls, old_pos, direction):
+    constraints_list = list()
+    walls = set(placed_walls)
+    if direction == 'r':
+        constraints_list = [{(old_pos[0] - 1, old_pos[1], 'g')}, {(old_pos[0] - 1, old_pos[1] + 1, 'g')}, 
+                            {(old_pos[0], old_pos[1], 'g')}, {(old_pos[0], old_pos[1] + 1, 'g')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+    if direction == 'l':
+        constraints_list = [{(old_pos[0] - 1, old_pos[1] - 1, 'g')}, {(old_pos[0] - 1, old_pos[1] - 2, 'g')}, 
+                            {(old_pos[0], old_pos[1] - 1, 'g')}, {(old_pos[0], old_pos[1] - 2, 'g')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+    if direction == 'd':
+        constraints_list = [{(old_pos[0], old_pos[1] - 1, 'b')}, {(old_pos[0] + 1, old_pos[1] - 1, 'b')}, 
+                            {(old_pos[0], old_pos[1], 'b')}, {(old_pos[0] + 1, old_pos[1], 'b')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+    if direction == 'u':
+        constraints_list = [{(old_pos[0] - 1, old_pos[1] - 1, 'b')}, {(old_pos[0] - 2, old_pos[1] - 1, 'b')}, 
+                            {(old_pos[0] - 1, old_pos[1], 'b')}, {(old_pos[0] - 2, old_pos[1], 'b')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+
+    if direction == 'dr':
+        constraints_list = [{(old_pos[0], old_pos[1], 'g')}, {(old_pos[0], old_pos[1], 'b')},
+                            {(old_pos[0] - 1, old_pos[1], 'g'), (old_pos[0], old_pos[1] - 1, 'b')}, 
+                            {(old_pos[0] + 1, old_pos[1], 'g'), (old_pos[0], old_pos[1] + 1, 'b')}, 
+                            {(old_pos[0] - 1, old_pos[1], 'g'), (old_pos[0] + 1, old_pos[1], 'g')}, 
+                            {(old_pos[0], old_pos[1] - 1, 'b'), (old_pos[0], old_pos[1] + 1, 'b')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+    if direction == 'dl':
+        constraints_list = [{(old_pos[0], old_pos[0] - 1, 'g')}, {(old_pos[0], old_pos[1] - 1, 'b')},
+                            {(old_pos[0] - 1, old_pos[1] - 1, 'g'), (old_pos[0], old_pos[1], 'b')}, 
+                            {(old_pos[0] + 1, old_pos[1] - 1, 'g'), (old_pos[0], old_pos[1] - 2, 'b')}, 
+                            {(old_pos[0] - 1, old_pos[1] - 1, 'g'), (old_pos[0] + 1, old_pos[1] - 1, 'g')}, 
+                            {(old_pos[0], old_pos[1], 'b'), (old_pos[0], old_pos[1] - 2, 'b')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+    if direction == 'ur':
+        constraints_list = [{(old_pos[0] - 1, old_pos[0], 'g')}, {(old_pos[0] - 1, old_pos[1], 'b')},
+                            {(old_pos[0], old_pos[1], 'g'), (old_pos[0] - 1, old_pos[1] - 1, 'b')}, 
+                            {(old_pos[0] - 2, old_pos[1], 'g'), (old_pos[0] - 1, old_pos[1] + 1, 'b')}, 
+                            {(old_pos[0], old_pos[1], 'g'), (old_pos[0] - 2, old_pos[1], 'g')}, 
+                            {(old_pos[0] - 1, old_pos[1] - 1, 'b'), (old_pos[0] - 1, old_pos[1] + 1, 'b')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+    if direction == 'ul':
+        constraints_list = [{(old_pos[0] - 1, old_pos[0] - 1, 'g')}, {(old_pos[0] - 1, old_pos[1] - 1, 'b')},
+                            {(old_pos[0], old_pos[1] - 1, 'g'), (old_pos[0] - 1, old_pos[1], 'b')}, 
+                            {(old_pos[0] - 2, old_pos[1] - 1, 'g'), (old_pos[0] - 1, old_pos[1] - 2, 'b')}, 
+                            {(old_pos[0], old_pos[1] - 1, 'g'), (old_pos[0] - 2, old_pos[1] - 1, 'g')}, 
+                            {(old_pos[0] - 1, old_pos[1], 'b'), (old_pos[0] - 1, old_pos[1] - 2, 'b')}]
+        for element in constraints_list:
+            if element.issubset(walls): return True
+
+    return False
+
 def is_walls_overlap(wall: tuple, new_wall: tuple) -> bool:
     if wall[0] == new_wall[0] and wall[1] == new_wall[1]: return True
     

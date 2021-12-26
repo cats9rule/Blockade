@@ -356,13 +356,16 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
             checklist = get_blocking_figure_checklist(
                 direction, player_positions[opponent], figure_pos, other_figure)
             if not any(checklist): return False
+    
             
-    if not isinstance(new_wall, type(None)) and is_hitting_wall(new_wall, old_pos, direction):
+    if not isinstance(new_wall, type(None)):
+        walls_with_new_wall = placed_walls + [new_wall]
+        if is_hitting_any_wall(walls_with_new_wall, old_pos, direction):
+            return False
+    
+    if is_hitting_any_wall(copy.deepcopy(placed_walls), old_pos, direction):
         return False
     
-    for wall in placed_walls:
-        if is_hitting_wall(wall, old_pos, direction):
-            return False
     return True
 
 

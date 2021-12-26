@@ -151,9 +151,12 @@ def wall_count():
 def get_initial_state(wall_count: int, initial_positions: dict, playing_first: str) -> dict:
     """Returns state with initialized player positions, first player, walls left initialized to initial wall count, and empty placed walls list."""
     return {
-        'player positions': copy.deepcopy(initial_positions),
+        'player positions': {
+        'X': [(1, 1) , (3, 1)],
+        'O': [(1, 4) , (3, 4)]
+    }, #copy.deepcopy(initial_positions),
         'current player': copy.copy(playing_first),
-        'placed walls': [],
+        'placed walls': [(2, 3, 'g')],
         'walls left': {
             'X': [copy.copy(wall_count), copy.copy(wall_count)],
             'O': [copy.copy(wall_count), copy.copy(wall_count)]
@@ -345,7 +348,8 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
     for position in player_positions[opponent]:
         if figure_pos[0] == position[0] and figure_pos[1] == position[1] and figure_pos not in starting_pos[opponent]: return False
     
-    if figure_pos == old_pos: return False
+    if figure_pos[0] == old_pos[0] and figure_pos[1] == old_pos[1]: return False
+    if figure_pos[0] == other_figure[0] and figure_pos[1] == other_figure[1]: return False
 
     if d_row + d_col > 2: return False
     if d_row + d_col == 1:
@@ -378,33 +382,33 @@ def is_wall_placement_valid(placed_walls: list, new_wall: tuple, board_dim:tuple
                 return False
     return True
 
-def is_hitting_wall(wall: tuple, old_pos: tuple, direction: str) -> bool:
-    if direction == 'l':
-        if wall[2] == 'g' and (wall[1] == old_pos[1] - 1 or wall[1] == old_pos[1] - 2) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
-            return True
-    if direction == 'r':
-        if wall[2] == 'g' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] + 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
-            return True
-    if direction == 'd':
-        if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] + 1):
-            return True
-    if direction == 'u':
-        if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] - 1 or wall[0] == old_pos[0] - 2):
-            return True
+# def is_hitting_wall(wall: tuple, old_pos: tuple, direction: str) -> bool:
+#     if direction == 'l':
+#         if wall[2] == 'g' and (wall[1] == old_pos[1] - 1 or wall[1] == old_pos[1] - 2) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
+#             return True
+#     if direction == 'r':
+#         if wall[2] == 'g' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] + 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
+#             return True
+#     if direction == 'd':
+#         if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] + 1):
+#             return True
+#     if direction == 'u':
+#         if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] - 1 or wall[0] == old_pos[0] - 2):
+#             return True
             
-    if direction == 'ul':
-        if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0] - 1:
-            return True
-    if direction == 'ur':
-        if wall[1] == old_pos[1] and wall[0] == old_pos[0] - 1:
-            return True
-    if direction == 'dl':
-        if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0]:
-            return True
-    if direction == 'dr':
-        if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
-            return True
-    return False
+#     if direction == 'ul':
+#         if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0] - 1:
+#             return True
+#     if direction == 'ur':
+#         if wall[1] == old_pos[1] and wall[0] == old_pos[0] - 1:
+#             return True
+#     if direction == 'dl':
+#         if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0]:
+#             return True
+#     if direction == 'dr':
+#         if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
+#             return True
+#     return False
 
 def is_hitting_any_wall(placed_walls, old_pos, direction):
     constraints_list = list()

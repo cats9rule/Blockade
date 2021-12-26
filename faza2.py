@@ -2,6 +2,7 @@
 from faza1 import generate_next_state, is_figure_movement_valid, is_walls_overlap, validate_move
 from faza1 import cls
 import copy
+import math
 
 def input_move(state: dict, board_dim: tuple, starting_pos: dict) -> dict:
     """Requests input for wall (if needed) and moving figure. Validates the move. 

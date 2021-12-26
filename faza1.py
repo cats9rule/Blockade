@@ -379,26 +379,26 @@ def is_hitting_wall(wall: tuple, old_pos: tuple, direction: str) -> bool:
     if direction == 'l':
         if wall[2] == 'g' and (wall[1] == old_pos[1] - 1 or wall[1] == old_pos[1] - 2) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
             return True
-    elif direction == 'r':
+    if direction == 'r':
         if wall[2] == 'g' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] + 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
             return True
-    elif direction == 'd':
+    if direction == 'd':
         if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] + 1):
             return True
-    elif direction == 'u':
+    if direction == 'u':
         if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] - 1 or wall[0] == old_pos[0] - 2):
             return True
             
-    elif direction == 'ul':
+    if direction == 'ul':
         if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0] - 1:
             return True
-    elif direction == 'ur':
+    if direction == 'ur':
         if wall[1] == old_pos[1] and wall[0] == old_pos[0] - 1:
             return True
-    elif direction == 'dl':
+    if direction == 'dl':
         if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0]:
             return True
-    elif direction == 'dr':
+    if direction == 'dr':
         if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
             return True
     return False

@@ -346,7 +346,7 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
         return False
     
     for position in player_positions[opponent]:
-        if figure_pos[0] == position[0] and figure_pos[1] == position[1] and figure_pos not in starting_pos[opponent]: return False
+        if figure_pos[0] == position[0] and figure_pos[1] == position[1] and (figure_pos[0], figure_pos[1]) not in starting_pos[opponent]: return False
     
     if figure_pos[0] == old_pos[0] and figure_pos[1] == old_pos[1]: return False
     if figure_pos[0] == other_figure[0] and figure_pos[1] == other_figure[1]: return False

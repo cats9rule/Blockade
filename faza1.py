@@ -342,9 +342,10 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
     if is_figure_out_of_bounds(figure_pos, board_dim):
         return False
     
-    for p in player_positions:
-        for position in player_positions[p]:
-            if figure_pos[0] == position[0] and figure_pos[1] == position[1] and figure_pos not in starting_pos[opponent]: return False
+    for position in player_positions[opponent]:
+        if figure_pos[0] == position[0] and figure_pos[1] == position[1] and figure_pos not in starting_pos[opponent]: return False
+    
+    if figure_pos == old_pos: return False
 
     if d_row + d_col > 2: return False
     if d_row + d_col == 1:
@@ -378,26 +379,26 @@ def is_hitting_wall(wall: tuple, old_pos: tuple, direction: str) -> bool:
     if direction == 'l':
         if wall[2] == 'g' and (wall[1] == old_pos[1] - 1 or wall[1] == old_pos[1] - 2) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
             return True
-    if direction == 'r':
+    elif direction == 'r':
         if wall[2] == 'g' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] + 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] - 1):
             return True
-    if direction == 'd':
+    elif direction == 'd':
         if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] or wall[0] == old_pos[0] + 1):
             return True
-    if direction == 'u':
+    elif direction == 'u':
         if wall[2] == 'b' and (wall[1] == old_pos[1] or wall[1] == old_pos[1] - 1) and (wall[0] == old_pos[0] - 1 or wall[0] == old_pos[0] - 2):
             return True
             
-    if direction == 'ul':
+    elif direction == 'ul':
         if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0] - 1:
             return True
-    if direction == 'ur':
+    elif direction == 'ur':
         if wall[1] == old_pos[1] and wall[0] == old_pos[0] - 1:
             return True
-    if direction == 'dl':
+    elif direction == 'dl':
         if wall[1] == old_pos[1] - 1 and wall[0] == old_pos[0]:
             return True
-    if direction == 'dr':
+    elif direction == 'dr':
         if wall[1] == old_pos[1] and wall[0] == old_pos[0]:
             return True
     return False

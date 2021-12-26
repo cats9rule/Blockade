@@ -116,7 +116,7 @@ def get_figure_moves(figure_index: int, old_pos: tuple, player: str, player_posi
     move_list = [(-2, 0), (2, 0), (0, -2), (0, 2), (-1, -1), (-1, 1), (1, 1), (1, -1), (-1, 0), (0, 1), (1, 0), (0, -1)]
     figure_moves = []
     for move in move_list:
-        new_move = (old_pos[0] + move[0], old_pos[0] + move[0], figure_index)
+        new_move = (old_pos[0] + move[0], old_pos[1] + move[1], figure_index)
         if is_figure_movement_valid(new_move, figure_index, old_pos, player, player_positions, starting_pos, placed_walls, None, board_dim):
             figure_moves.append(new_move)
     return figure_moves

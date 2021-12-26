@@ -1,5 +1,6 @@
 import os
 import copy
+from f2d import is_path_available
 
 
 def define_initial_parameters():
@@ -216,7 +217,10 @@ def validate_move(state: dict, move: dict, board_dim: tuple, starting_pos: dict)
     placed_walls = state['placed walls']
     if not is_figure_movement_valid(figure_pos, figure_index, old_pos, player, player_positions, starting_pos, placed_walls, new_wall, board_dim):
         return False
-    
+
+    if not is_path_available(state, starting_pos, board_dim):
+        return False
+        
     return True
 
 

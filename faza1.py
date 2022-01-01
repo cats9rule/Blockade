@@ -152,12 +152,9 @@ def wall_count():
 def get_initial_state(wall_count: int, initial_positions: dict, playing_first: str) -> dict:
     """Returns state with initialized player positions, first player, walls left initialized to initial wall count, and empty placed walls list."""
     return {
-        'player positions': {
-        'X': [(1, 2) , (2, 4)],
-        'O': [(4, 2) , (4, 4)]
-    }, #copy.deepcopy(initial_positions),
+        'player positions': copy.deepcopy(initial_positions),
         'current player': copy.copy(playing_first),
-        'placed walls': [(1, 2, 'g'), (2, 1, 'b')],
+        'placed walls': [(1, 3, 'g'), (3, 3, 'g')],
         'walls left': {
             'X': [copy.copy(wall_count), copy.copy(wall_count)],
             'O': [copy.copy(wall_count), copy.copy(wall_count)]
@@ -339,33 +336,28 @@ def insert_horiz_wall(table_string: str, string_to_insert: str, board_dim: tuple
 
 
 def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tuple, player: str, player_positions: dict, starting_pos: dict, placed_walls: list, new_wall: tuple, board_dim: tuple) -> bool:
-    opponent = 'X' if player == 'O' else 'O'
     d_row = abs(old_pos[0] - figure_pos[0])
     d_col = abs(old_pos[1] - figure_pos[1])
-    direction = get_movement_direction(figure_pos, old_pos)
-    other_figure = player_positions[player][(figure_index + 1) % 2]
-    checklist = []
-    
-    if is_figure_out_of_bounds(figure_pos, board_dim):
-        return False
-    
-    for position in player_positions[opponent]:
-        if figure_pos[0] == position[0] and figure_pos[1] == position[1] and (figure_pos[0], figure_pos[1]) not in starting_pos[opponent]: return False
+    if d_row + d_col > 2: return False
     
     if figure_pos[0] == old_pos[0] and figure_pos[1] == old_pos[1]: return False
-    if figure_pos[0] == other_figure[0] and figure_pos[1] == other_figure[1]: return False
+    if is_figure_out_of_bounds(figure_pos, board_dim):
+        return False
 
-    if d_row + d_col > 2: return False
-    if d_row + d_col == 1:
-        for position in starting_pos[opponent]:
-            checklist.append(position[0] != figure_pos[0]
-                             or position[1] != figure_pos[1])
-        if all(checklist):
-            checklist = get_blocking_figure_checklist(
-                direction, player_positions[opponent], figure_pos, other_figure)
-            if not any(checklist): return False
+    opponent = 'X' if player == 'O' else 'O'
+    other_figure = player_positions[player][(figure_index + 1) % 2]
     
-            
+    if figure_pos[0] == other_figure[0] and figure_pos[1] == other_figure[1]: return False
+    for position in player_positions[opponent]:
+        if figure_pos[0] == position[0] and figure_pos[1] == position[1] and (figure_pos[0], figure_pos[1]) not in starting_pos[opponent]: return False    
+    
+    direction = get_movement_direction(figure_pos, old_pos)
+    if (d_row + d_col == 1 and starting_pos[opponent][0][0] != figure_pos[0] and starting_pos[opponent][0][1] != figure_pos[1]
+       and starting_pos[opponent][1][0] != figure_pos[0] and starting_pos[opponent][1][1] != figure_pos[1]):
+        if not is_figure_blocking_valid(
+                direction, player_positions[opponent], figure_pos, other_figure, placed_walls):
+            return False
+         
     if not isinstance(new_wall, type(None)):
         walls_with_new_wall = placed_walls + [new_wall]
         if is_hitting_any_wall(walls_with_new_wall, old_pos, direction):
@@ -378,7 +370,6 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
 
 
 def is_wall_placement_valid(placed_walls: list, new_wall: tuple, board_dim:tuple) -> bool:
-    # NOTE: direction: u (up), d (down), l (left), r (right), ul (up left), ur (up right), dl (down left), dr (down right)
     is_wall_out_of_bounds(new_wall, board_dim)
     for wall in placed_walls:
         if not isinstance(new_wall, type(None)):
@@ -387,6 +378,7 @@ def is_wall_placement_valid(placed_walls: list, new_wall: tuple, board_dim:tuple
     return True
 
 def is_hitting_any_wall(placed_walls, old_pos, direction):
+    # NOTE: direction: u (up), d (down), l (left), r (right), ul (up left), ur (up right), dl (down left), dr (down right)
     constraints_list = list()
     walls = set(placed_walls)
     if direction == 'r':
@@ -465,8 +457,7 @@ def is_figure_out_of_bounds(figure_pos: tuple, board_dim: tuple) -> bool:
     if any([figure_pos[0] < 1, figure_pos[0] > board_dim[0], figure_pos[1] < 1, figure_pos[1] > board_dim[1]]):
         return True
     else: return False
-    
-        
+      
 def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
     direction = ""
     if old_pos[0] > figure_pos[0]: direction += "u"
@@ -475,15 +466,38 @@ def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
     elif old_pos[1] < figure_pos[1]: direction += "r"
     return direction
 
-def get_blocking_figure_checklist(direction: str, opponent_positions: list, figure_pos: tuple, other_figure:tuple) -> list:
-    checklist = list()
-    for position in opponent_positions:
-        checklist.append(direction == 'l' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] - 1))
-        checklist.append(direction == 'r' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] + 1))
-        checklist.append(direction == 'u' and position[0] == (figure_pos[0] - 1) and position[1] == figure_pos[1])
-        checklist.append(direction == 'd' and position[0] == (figure_pos[0] + 1) and position[1] == figure_pos[1])
-    checklist.append(direction == 'l' and other_figure[0] == figure_pos[0] and other_figure[1] == (figure_pos[1] - 1))
-    checklist.append(direction == 'r' and other_figure[0] == figure_pos[0] and other_figure[1] == (figure_pos[1] + 1))
-    checklist.append(direction == 'u' and other_figure[0] == (figure_pos[0] - 1) and other_figure[1] == figure_pos[1])
-    checklist.append(direction == 'd' and other_figure[0] == (figure_pos[0] + 1) and other_figure[1] == figure_pos[1])
-    return checklist
+def is_figure_blocking_valid(direction: str, opponent_positions: list, figure_pos: tuple, other_figure:tuple, placed_walls: list) -> list:
+    other_figures = [other_figure, opponent_positions[0], opponent_positions[1]]
+    for position in other_figures:
+        if direction == 'l':
+            if (position[0] == figure_pos[0] and position[1] == (figure_pos[1] - 1) 
+                    and (figure_pos[0], figure_pos[1] - 1, 'g') not in placed_walls
+                    and (figure_pos[0] - 1, figure_pos[1] - 1, 'g') not in placed_walls): 
+                return True
+        elif direction == 'r':
+            if (position[0] == figure_pos[0] and position[1] == (figure_pos[1] + 1) 
+                    and (figure_pos[0], figure_pos[1] + 1, 'g') not in placed_walls
+                    and (figure_pos[0] - 1, figure_pos[1] + 1, 'g') not in placed_walls):
+                return True
+        elif direction == 'u':
+            if (position[0] == (figure_pos[0] - 1) and position[1] == figure_pos[1] 
+                    and (figure_pos[0] - 1, figure_pos[1] - 1, 'b') not in placed_walls 
+                    and (figure_pos[0] - 1, figure_pos[1], 'b') not in placed_walls):
+                return True
+        elif direction == 'd':
+            if (position[0] == (figure_pos[0] + 1) and position[1] == figure_pos[1]
+                    and (figure_pos[0], figure_pos[1] - 1, 'b') not in placed_walls
+                    and (figure_pos[0], figure_pos[1], 'b') not in placed_walls):
+                return True
+    return False
+    
+    # for position in opponent_positions:
+    #     checklist.append(direction == 'l' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] - 1))
+    #     checklist.append(direction == 'r' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] + 1))
+    #     checklist.append(direction == 'u' and position[0] == (figure_pos[0] - 1) and position[1] == figure_pos[1])
+    #     checklist.append(direction == 'd' and position[0] == (figure_pos[0] + 1) and position[1] == figure_pos[1])
+    # checklist.append(direction == 'l' and other_figure[0] == figure_pos[0] and other_figure[1] == (figure_pos[1] - 1))
+    # checklist.append(direction == 'r' and other_figure[0] == figure_pos[0] and other_figure[1] == (figure_pos[1] + 1))
+    # checklist.append(direction == 'u' and other_figure[0] == (figure_pos[0] - 1) and other_figure[1] == figure_pos[1])
+    # checklist.append(direction == 'd' and other_figure[0] == (figure_pos[0] + 1) and other_figure[1] == figure_pos[1])
+    # return checklist

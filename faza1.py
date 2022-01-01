@@ -352,8 +352,8 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
         if figure_pos[0] == position[0] and figure_pos[1] == position[1] and (figure_pos[0], figure_pos[1]) not in starting_pos[opponent]: return False    
     
     direction = get_movement_direction(figure_pos, old_pos)
-    if (d_row + d_col == 1 and starting_pos[opponent][0][0] != figure_pos[0] and starting_pos[opponent][0][1] != figure_pos[1]
-       and starting_pos[opponent][1][0] != figure_pos[0] and starting_pos[opponent][1][1] != figure_pos[1]):
+    if (d_row + d_col == 1 and ( not (starting_pos[opponent][0][0] == figure_pos[0] and starting_pos[opponent][0][1] == figure_pos[1])
+       and not (starting_pos[opponent][1][0] == figure_pos[0] and starting_pos[opponent][1][1] == figure_pos[1]))):
         if not is_figure_blocking_valid(
                 direction, player_positions[opponent], figure_pos, other_figure, placed_walls):
             return False
@@ -362,8 +362,7 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
         walls_with_new_wall = placed_walls + [new_wall]
         if is_hitting_any_wall(walls_with_new_wall, old_pos, direction):
             return False
-    
-    if is_hitting_any_wall(copy.deepcopy(placed_walls), old_pos, direction):
+    elif is_hitting_any_wall(copy.deepcopy(placed_walls), old_pos, direction):
         return False
     
     return True
@@ -411,7 +410,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
         for element in constraints_list:
             if element.issubset(walls): return True
     if direction == 'dl':
-        constraints_list = [{(old_pos[0], old_pos[0] - 1, 'g')}, {(old_pos[0], old_pos[1] - 1, 'b')},
+        constraints_list = [{(old_pos[0], old_pos[1] - 1, 'g')}, {(old_pos[0], old_pos[1] - 1, 'b')},
                             {(old_pos[0] - 1, old_pos[1] - 1, 'g'), (old_pos[0], old_pos[1], 'b')}, 
                             {(old_pos[0] + 1, old_pos[1] - 1, 'g'), (old_pos[0], old_pos[1] - 2, 'b')}, 
                             {(old_pos[0] - 1, old_pos[1] - 1, 'g'), (old_pos[0] + 1, old_pos[1] - 1, 'g')}, 
@@ -419,7 +418,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
         for element in constraints_list:
             if element.issubset(walls): return True
     if direction == 'ur':
-        constraints_list = [{(old_pos[0] - 1, old_pos[0], 'g')}, {(old_pos[0] - 1, old_pos[1], 'b')},
+        constraints_list = [{(old_pos[0] - 1, old_pos[1], 'g')}, {(old_pos[0] - 1, old_pos[1], 'b')},
                             {(old_pos[0], old_pos[1], 'g'), (old_pos[0] - 1, old_pos[1] - 1, 'b')}, 
                             {(old_pos[0] - 2, old_pos[1], 'g'), (old_pos[0] - 1, old_pos[1] + 1, 'b')}, 
                             {(old_pos[0], old_pos[1], 'g'), (old_pos[0] - 2, old_pos[1], 'g')}, 
@@ -427,7 +426,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
         for element in constraints_list:
             if element.issubset(walls): return True
     if direction == 'ul':
-        constraints_list = [{(old_pos[0] - 1, old_pos[0] - 1, 'g')}, {(old_pos[0] - 1, old_pos[1] - 1, 'b')},
+        constraints_list = [{(old_pos[0] - 1, old_pos[1] - 1, 'g')}, {(old_pos[0] - 1, old_pos[1] - 1, 'b')},
                             {(old_pos[0], old_pos[1] - 1, 'g'), (old_pos[0] - 1, old_pos[1], 'b')}, 
                             {(old_pos[0] - 2, old_pos[1] - 1, 'g'), (old_pos[0] - 1, old_pos[1] - 2, 'b')}, 
                             {(old_pos[0], old_pos[1] - 1, 'g'), (old_pos[0] - 2, old_pos[1] - 1, 'g')}, 

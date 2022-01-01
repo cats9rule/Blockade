@@ -1,6 +1,6 @@
 import os
 import copy
-from f2d import is_path_available
+from faza2 import is_path_available
 
 
 def define_initial_parameters():

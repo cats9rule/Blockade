@@ -1,6 +1,5 @@
 
-from faza1 import generate_next_state, is_figure_movement_valid, is_walls_overlap, validate_move
-from faza1 import cls
+import faza1
 import copy
 import math
 
@@ -25,7 +24,7 @@ def input_move(state: dict, board_dim: tuple, starting_pos: dict) -> dict:
             'figure': figure
         }
 
-        loop = not validate_move(state, move, board_dim, starting_pos)
+        loop = not faza1.validate_move(state, move, board_dim, starting_pos)
         if loop:
             print("> You must enter a valid move.")
 
@@ -36,7 +35,7 @@ def get_winner(state: dict) -> str:
     return 'X' if state['current player'] == 'O' else 'O'
 
 def get_next_state(state: dict, move: dict) -> dict:
-    return generate_next_state(state, move)
+    return faza1.generate_next_state(state, move)
 
 def get_next_state_list(state: dict, board_dim: tuple, starting_pos: dict) -> list:
     states = []
@@ -58,7 +57,7 @@ def get_next_state_list(state: dict, board_dim: tuple, starting_pos: dict) -> li
                     'wall': copy.deepcopy(wall),
                     'figure': copy.deepcopy(figure_move)
                 }
-                if validate_move(state, potential_move, board_dim, starting_pos):
+                if faza1.validate_move(state, potential_move, board_dim, starting_pos):
                     states.append(get_next_state(state, potential_move))
         
     return states
@@ -118,7 +117,7 @@ def get_figure_moves(figure_index: int, old_pos: tuple, player: str, player_posi
     figure_moves = []
     for move in move_list:
         new_move = (old_pos[0] + move[0], old_pos[1] + move[1], figure_index)
-        if is_figure_movement_valid(new_move, figure_index, old_pos, player, player_positions, starting_pos, placed_walls, None, board_dim):
+        if faza1.is_figure_movement_valid(new_move, figure_index, old_pos, player, player_positions, starting_pos, placed_walls, None, board_dim):
             figure_moves.append(new_move)
     return figure_moves
     
@@ -136,9 +135,9 @@ def get_wall_placements(state: dict, board_dim: tuple) -> list:
                 new_wall_b = (i, j, 'b')
                 
             for wall in state['placed walls']:
-                if not isinstance(new_wall_g, type(None)) and not is_walls_overlap(wall, new_wall_g):
+                if not isinstance(new_wall_g, type(None)) and not faza1.is_walls_overlap(wall, new_wall_g):
                     wall_placements.append(new_wall_g)
-                if not isinstance(new_wall_b, type(None)) and not is_walls_overlap(wall, new_wall_b):
+                if not isinstance(new_wall_b, type(None)) and not faza1.is_walls_overlap(wall, new_wall_b):
                     wall_placements.append(new_wall_g)
                     
     return wall_placements

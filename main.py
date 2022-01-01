@@ -1,12 +1,11 @@
 
-from f2d import a_star, is_path_available
-from faza1 import cls, generate_next_state, get_initial_state, is_game_end, show_game, define_initial_parameters
-from f2n import get_winner, input_move
+import faza1
+import faza2
 import pyfiglet
 import copy
 
 def main():
-    init_params = define_initial_parameters()
+    init_params = faza1.define_initial_parameters()
 
     playing_first = init_params["playing_first"]
     board_dim = init_params["board_dim"]
@@ -14,22 +13,22 @@ def main():
     starting_wall_count = init_params["starting_wall_count"]
 
 
-    state = get_initial_state(starting_wall_count, starting_pos, playing_first)
+    state = faza1.get_initial_state(starting_wall_count, starting_pos, playing_first)
     move = {
         'player': playing_first,
         'wall': None,
         'figure': None
     }
-    show_game(state, board_dim, starting_pos)
+    faza1.show_game(state, board_dim, starting_pos)
 
-    while(not is_game_end(state, starting_pos)):
-        move = input_move(state, board_dim, starting_pos)
-        state = generate_next_state(state, move)
-        show_game(state, board_dim, starting_pos)
+    while(not faza1.is_game_end(state, starting_pos)):
+        move = faza2.input_move(state, board_dim, starting_pos)
+        state = faza1.generate_next_state(state, move)
+        faza1.show_game(state, board_dim, starting_pos)
 
-    winner = get_winner(state)
+    winner = faza2.get_winner(state)
     result = pyfiglet.figlet_format(f"Winner! {winner} won this game!")
-    cls()
+    faza1.cls()
     print(result)
     return
 

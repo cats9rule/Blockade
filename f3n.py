@@ -3,7 +3,7 @@ import faza2
 import sys
 import copy
 
-def computer_move(state: dict, starting_pos: dict, board_dim: tuple, depth: int):
+def computer_move(state: dict, starting_pos: dict, board_dim: tuple, depth: int) -> dict:
     #TODO: play minmax, get new state, return new state
     is_x = True if state['current player'] == 'X' else False
     return minmax(state, depth, is_x, board_dim, starting_pos)

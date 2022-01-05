@@ -14,7 +14,7 @@ def input_move(state: dict, board_dim: tuple, starting_pos: dict) -> dict:
     while loop:
 
         figure = input_figure()
-        wall_pos = None
+        wall_pos = 0
         if can_place_wall_g or can_place__wall_b:
             wall_pos = input_wall(can_place_wall_g, can_place__wall_b)
 
@@ -41,21 +41,22 @@ def get_next_state_list(state: dict, board_dim: tuple, starting_pos: dict) -> li
     states = []
     possible_figure_moves = []
     player = state['current player']
+    player_pos = state['player positions']
     for i in range(0, 2):
         possible_figure_moves += get_figure_moves(
-            i, state['player positions'][player][i], player, state['player positions'], starting_pos, state['placed walls'], board_dim
+            i, player_pos[player][i], player, player_pos, starting_pos, state['placed walls'], board_dim
             )
     potential_walls = get_wall_placements(state, board_dim)
     
     for figure_move in possible_figure_moves:
         if len(potential_walls) == 0:
-            states.append(get_next_state(state, {'player': copy.copy(player), 'wall': None, 'figure': copy.deepcopy(figure_move)}))
+            states.append(get_next_state(state, {'player': f"{player}", 'wall': 0, 'figure': figure_move}))
         else: 
             for wall in potential_walls:
                 potential_move = {
-                    'player': copy.copy(player),
-                    'wall': copy.deepcopy(wall),
-                    'figure': copy.deepcopy(figure_move)
+                    'player': f"{player}",
+                    'wall': wall,
+                    'figure': figure_move
                 }
                 if faza1.validate_move(state, potential_move, board_dim, starting_pos):
                     states.append(get_next_state(state, potential_move))
@@ -123,20 +124,21 @@ def get_figure_moves(figure_index: int, old_pos: tuple, player: str, player_posi
     
 def get_wall_placements(state: dict, board_dim: tuple) -> list:
     wall_placements = list()
-    
+    walls_left = state['walls left'][state['current player']]
+    if walls_left[0] <= 0 and walls_left[1] <= 0: return []
     for i in range(1, board_dim[0]):
         for j in range(1, board_dim[1]):
-            new_wall_g = None
-            new_wall_b = None
+            new_wall_g = 0
+            new_wall_b = 0
             
             if state['walls left'][state['current player']][0] > 0:
                 new_wall_g = (i, j, 'g')
-                if faza1.is_wall_placement_valid(state['placed walls'], new_wall_g, board_dim):
-                    wall_placements.append(new_wall_g)
+                wall_placements.append(new_wall_g)
+                #if faza1.is_wall_placement_valid(state['placed walls'], new_wall_g, board_dim):
             if state['walls left'][state['current player']][1] > 0:
                 new_wall_b = (i, j, 'b')
-                if faza1.is_wall_placement_valid(state['placed walls'], new_wall_b, board_dim):
-                    wall_placements.append(new_wall_b)
+                wall_placements.append(new_wall_b)
+                #if faza1.is_wall_placement_valid(state['placed walls'], new_wall_b, board_dim):
                     
     return wall_placements
 

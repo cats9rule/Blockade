@@ -131,14 +131,12 @@ def get_wall_placements(state: dict, board_dim: tuple) -> list:
             
             if state['walls left'][state['current player']][0] > 0:
                 new_wall_g = (i, j, 'g')
+                if faza1.is_wall_placement_valid(state['placed walls'], new_wall_g, board_dim):
+                    wall_placements.append(new_wall_g)
             if state['walls left'][state['current player']][1] > 0:
                 new_wall_b = (i, j, 'b')
-                
-            for wall in state['placed walls']:
-                if not isinstance(new_wall_g, type(None)) and not faza1.is_walls_overlap(wall, new_wall_g):
-                    wall_placements.append(new_wall_g)
-                if not isinstance(new_wall_b, type(None)) and not faza1.is_walls_overlap(wall, new_wall_b):
-                    wall_placements.append(new_wall_g)
+                if faza1.is_wall_placement_valid(state['placed walls'], new_wall_b, board_dim):
+                    wall_placements.append(new_wall_b)
                     
     return wall_placements
 
@@ -149,6 +147,7 @@ def h(currentPosition, endPosition):
     return math.sqrt( x**2 + y**2 )
 
 def a_star(start, end, figure_index, player, player_positions, starting_pos, placed_walls, board_dim):
+    start = (start[0], start[1], 0)
     found_end = False
     open_set = set()
     closed_set = set()
@@ -164,7 +163,7 @@ def a_star(start, end, figure_index, player, player_positions, starting_pos, pla
             if node is None or g[next_node] + h(next_node, end) < g[node] + h(node, end):
                 node = next_node
         
-        if node == end:
+        if node[0] == end[0] and node[1] == end[1]:
             found_end = True
             break
 

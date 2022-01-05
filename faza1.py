@@ -154,7 +154,7 @@ def get_initial_state(wall_count: int, initial_positions: dict, playing_first: s
     return {
         'player positions': copy.deepcopy(initial_positions),
         'current player': copy.copy(playing_first),
-        'placed walls': [(1, 3, 'g'), (3, 3, 'g')],
+        'placed walls': [],
         'walls left': {
             'X': [copy.copy(wall_count), copy.copy(wall_count)],
             'O': [copy.copy(wall_count), copy.copy(wall_count)]
@@ -183,7 +183,7 @@ def generate_next_state(state: dict, move: dict) -> dict:
     player_pos[player][figure_index] = figure_pos
     new_wall = move['wall']
     placed_walls = copy.deepcopy(state['placed walls'])
-    walls_left = state['walls left']
+    walls_left = copy.deepcopy(state['walls left'])
 
     if not isinstance(new_wall, type(None)):
         placed_walls.append(new_wall)

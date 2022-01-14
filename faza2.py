@@ -89,6 +89,9 @@ def input_wall(can_green: bool, can_blue: bool) -> tuple:
             color = 'b'
             print("> You can only place a blue wall now.")
         
+        else:
+            continue
+        
         row = int(input("> Choose wall row: "))
         col = int(input("> Choose wall column: "))
 

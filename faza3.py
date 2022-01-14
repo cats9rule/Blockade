@@ -32,7 +32,7 @@ def min_value(state: dict, alpha: tuple, beta: tuple, depth: int, board_dim: tup
 def evaluate(state: dict, starting_pos: dict, board_dim: tuple) -> int:
     player = state['current player']
     opponent = 'X' if player == 'O' else 'O'
-    mul = -1 if opponent == 'O' else 1
+    mul = 1 if opponent == 'O' else -1
     figure_pos = state['player positions'][opponent]
     opponent_base = starting_pos[player]
     if (figure_pos[0] in starting_pos[player] 
@@ -47,3 +47,4 @@ def evaluate(state: dict, starting_pos: dict, board_dim: tuple) -> int:
         distance_f2 = min(sqrt((figure_pos[1][0] - opponent_base[0][0]) ** 2 + (figure_pos[1][1] - opponent_base[0][1]) ** 2),
                           sqrt((figure_pos[1][0] - opponent_base[1][0]) ** 2 + (figure_pos[1][1] - opponent_base[1][1]) ** 2))
         return (distance_f1 + distance_f2 + wall_h) * mul
+        # return distance_f1 + distance_f2

@@ -154,7 +154,7 @@ def get_initial_state(wall_count: int, initial_positions: dict, playing_first: s
     return {
         'player positions': copy.deepcopy(initial_positions),
         'current player': copy.copy(playing_first),
-        'placed walls': {(4,1,'b'), (4,3,'b'), (3,4,'g')},
+        'placed walls': set(),
         'walls left': {
             'X': [copy.copy(wall_count), copy.copy(wall_count)],
             'O': [copy.copy(wall_count), copy.copy(wall_count)]
@@ -352,11 +352,12 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
         if figure_pos[0] == position[0] and figure_pos[1] == position[1] and (figure_pos[0], figure_pos[1]) not in starting_pos[opponent]: return False    
     
     direction = get_movement_direction(figure_pos, old_pos)
-    if (d_row + d_col == 1 and ( not (starting_pos[opponent][0][0] == figure_pos[0] and starting_pos[opponent][0][1] == figure_pos[1])
-       and not (starting_pos[opponent][1][0] == figure_pos[0] and starting_pos[opponent][1][1] == figure_pos[1]))):
-        if not is_figure_blocking_valid(
+    if (d_row + d_col == 1):
+        if ( not (starting_pos[opponent][0][0] == figure_pos[0] and starting_pos[opponent][0][1] == figure_pos[1])
+            and not (starting_pos[opponent][1][0] == figure_pos[0] and starting_pos[opponent][1][1] == figure_pos[1])):
+            if not is_figure_blocking_valid(
                 direction, player_positions[opponent], figure_pos, other_figure, placed_walls):
-            return False
+                return False
          
     if new_wall != 0:
         walls_with_new_wall = copy.deepcopy(placed_walls)

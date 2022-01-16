@@ -1,6 +1,6 @@
 from math import sqrt
 import faza2
-import f4d
+import faza4
 import sys
 import copy
 
@@ -40,7 +40,7 @@ def evaluate(state: dict, starting_pos: dict, board_dim: tuple) -> int:
         return (sqrt(board_dim[0] ** 2 + board_dim[1] ** 2) + 100) * mul
     else:
 
-        wall_h = f4d.wall_heuristics(state, starting_pos, board_dim)
+        wall_h = faza4.wall_heuristics(state, starting_pos, board_dim)
 
         distance_f1 = min(sqrt((figure_pos[0][0] - opponent_base[0][0]) ** 2 + (figure_pos[0][1] - opponent_base[0][1]) ** 2),
                           sqrt((figure_pos[0][0] - opponent_base[1][0]) ** 2 + (figure_pos[0][1] - opponent_base[1][1]) ** 2))

@@ -53,12 +53,12 @@ def board_dimensions():
 
         if board_rows > 22:
             board_rows = 22
-        elif board_rows < 11:
-            board_rows = 11
+        # elif board_rows < 11:
+        #     board_rows = 11
         if board_columns > 28:
             board_columns = 28
-        elif board_columns < 14:
-            board_columns = 14
+        # elif board_columns < 14:
+        #     board_columns = 14
 
         board_dim = (board_rows, board_columns)
 
@@ -136,7 +136,7 @@ def wall_count():
         walls_string = input()
         walls = int(walls_string)
 
-        if walls < 9 or walls > 18:
+        if walls < 0 or walls > 18:
             print("Whoops, invalid ammount of walls. Try again")
             continue
 
@@ -215,7 +215,7 @@ def validate_move(state: dict, move: dict, board_dim: tuple, starting_pos: dict)
     if not is_figure_movement_valid(figure_pos, figure_index, old_pos, player, player_positions, starting_pos, placed_walls, new_wall, board_dim):
         return False
     new_state = generate_next_state(state, move)
-    if not is_path_available(new_state, starting_pos, board_dim):
+    if not is_game_end(new_state, starting_pos)and not is_path_available(new_state, starting_pos, board_dim):
         return False
         
     return True

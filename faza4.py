@@ -87,8 +87,8 @@ def calculate_h(constraints_list_1, constraints_list_2, state):
     wall_h = 0
     for element in constraints_list_1:
         if element.issubset(state['placed walls']):
-            wall_h -= 3
+            wall_h += 0.03
     for element in constraints_list_2:
         if element.issubset(state['placed walls']):
-            wall_h -= 8
+            wall_h += 0.08
     return wall_h

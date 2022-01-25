@@ -246,14 +246,12 @@ def cls() -> None:
     """Clears console, taken from https://stackoverflow.com/questions/517970/how-to-clear-the-interpreter-console."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
-
 def show_player_stats(player_index: int, walls_left: tuple, is_current: bool) -> str:
     """Draws player info based on parameters."""
     output = f'PLAYER {player_index}'
     output += '                  ( current move )\n' if is_current else '\n'
     output += f'    Green walls left: {walls_left[0]}\n    Blue walls left:  {walls_left[1]}'
     return output + '\n'
-
 
 def generate_table_string(board_dim: tuple) -> str:
     """Makes a string representing the table without walls, figures or starting positions."""
@@ -279,7 +277,6 @@ def generate_table_string(board_dim: tuple) -> str:
                             board_dim[1] + '    \n'
     return string
 
-
 def insert_starting_positions(table_string: str, starting_positions: dict, board_dim: tuple) -> str:
     """Inserts starting positions into string table where they belong.
     Returns string with inserted positions."""
@@ -289,7 +286,6 @@ def insert_starting_positions(table_string: str, starting_positions: dict, board
                 table_string, key, board_dim, position, False)
     return table_string
 
-
 def insert_figures(table_string: str, player_positions: dict, board_dim: tuple) -> str:
     """Inserts player figures into string table on their positions.
     Returns string with inserted figures."""
@@ -298,7 +294,6 @@ def insert_figures(table_string: str, player_positions: dict, board_dim: tuple) 
             table_string = insert_string_at_position(
                 table_string, key + str(i), board_dim, player_positions[key][i-1], False)
     return table_string
-
 
 def insert_walls(table_string: str, walls: list, board_dim: tuple) -> str:
     """Inserts walls into string table where they belong.
@@ -318,7 +313,6 @@ def insert_walls(table_string: str, walls: list, board_dim: tuple) -> str:
             )
     return table_string
 
-
 def insert_string_at_position(table_string: str, string_to_insert: str, board_dim: tuple, position: tuple, is_wall: bool) -> str:
     """Inserts string_to_insert into table_string on position.
     Can be used for inserting a vertical wall.
@@ -326,7 +320,6 @@ def insert_string_at_position(table_string: str, string_to_insert: str, board_di
     index = (4 * (board_dim[1] + 2) + 1) * 2 * \
              position[0] + position[1] * 4 + (3 if is_wall else 1)
     return table_string[:index] + string_to_insert + table_string[index + len(string_to_insert):]
-
 
 def insert_horiz_wall(table_string: str, string_to_insert: str, board_dim: tuple, position: tuple) -> str:
     """Inserts horizontal wall onto given position. Returns table string."""
@@ -336,6 +329,7 @@ def insert_horiz_wall(table_string: str, string_to_insert: str, board_dim: tuple
 
 
 def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tuple, player: str, player_positions: dict, starting_pos: dict, placed_walls: set, new_wall: tuple, board_dim: tuple) -> bool:
+    """Returns True if moving the given figure does not violate game rules. If any rule is violated, returns False."""
     d_row = abs(old_pos[0] - figure_pos[0])
     d_col = abs(old_pos[1] - figure_pos[1])
     if d_row + d_col > 2: return False
@@ -369,8 +363,8 @@ def is_figure_movement_valid(figure_pos: tuple, figure_index: int, old_pos: tupl
     
     return True
 
-
 def is_wall_placement_valid(placed_walls: set, new_wall: tuple, board_dim:tuple) -> bool:
+    """Checks if wall placement is valid. Returns True if valid."""
     is_wall_out_of_bounds(new_wall, board_dim)
     for wall in placed_walls:
         if new_wall != 0:
@@ -379,6 +373,7 @@ def is_wall_placement_valid(placed_walls: set, new_wall: tuple, board_dim:tuple)
     return True
 
 def is_hitting_any_wall(placed_walls, old_pos, direction):
+    """Returns True if figure trying to move in direction from old_pos is hitting a wall."""
     # NOTE: direction: u (up), d (down), l (left), r (right), ul (up left), ur (up right), dl (down left), dr (down right)
     constraints_list = list()
     if direction == 'r':
@@ -386,23 +381,23 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
                             {(old_pos[0], old_pos[1], 'g')}, {(old_pos[0], old_pos[1] + 1, 'g')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
-    if direction == 'l':
+    elif direction == 'l':
         constraints_list = [{(old_pos[0] - 1, old_pos[1] - 1, 'g')}, {(old_pos[0] - 1, old_pos[1] - 2, 'g')}, 
                             {(old_pos[0], old_pos[1] - 1, 'g')}, {(old_pos[0], old_pos[1] - 2, 'g')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
-    if direction == 'd':
+    elif direction == 'd':
         constraints_list = [{(old_pos[0], old_pos[1] - 1, 'b')}, {(old_pos[0] + 1, old_pos[1] - 1, 'b')}, 
                             {(old_pos[0], old_pos[1], 'b')}, {(old_pos[0] + 1, old_pos[1], 'b')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
-    if direction == 'u':
+    elif direction == 'u':
         constraints_list = [{(old_pos[0] - 1, old_pos[1] - 1, 'b')}, {(old_pos[0] - 2, old_pos[1] - 1, 'b')}, 
                             {(old_pos[0] - 1, old_pos[1], 'b')}, {(old_pos[0] - 2, old_pos[1], 'b')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
 
-    if direction == 'dr':
+    elif direction == 'dr':
         constraints_list = [{(old_pos[0], old_pos[1], 'g')}, {(old_pos[0], old_pos[1], 'b')},
                             {(old_pos[0] - 1, old_pos[1], 'g'), (old_pos[0], old_pos[1] - 1, 'b')}, 
                             {(old_pos[0] + 1, old_pos[1], 'g'), (old_pos[0], old_pos[1] + 1, 'b')}, 
@@ -410,7 +405,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
                             {(old_pos[0], old_pos[1] - 1, 'b'), (old_pos[0], old_pos[1] + 1, 'b')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
-    if direction == 'dl':
+    elif direction == 'dl':
         constraints_list = [{(old_pos[0], old_pos[1] - 1, 'g')}, {(old_pos[0], old_pos[1] - 1, 'b')},
                             {(old_pos[0] - 1, old_pos[1] - 1, 'g'), (old_pos[0], old_pos[1], 'b')}, 
                             {(old_pos[0] + 1, old_pos[1] - 1, 'g'), (old_pos[0], old_pos[1] - 2, 'b')}, 
@@ -418,7 +413,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
                             {(old_pos[0], old_pos[1], 'b'), (old_pos[0], old_pos[1] - 2, 'b')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
-    if direction == 'ur':
+    elif direction == 'ur':
         constraints_list = [{(old_pos[0] - 1, old_pos[1], 'g')}, {(old_pos[0] - 1, old_pos[1], 'b')},
                             {(old_pos[0], old_pos[1], 'g'), (old_pos[0] - 1, old_pos[1] - 1, 'b')}, 
                             {(old_pos[0] - 2, old_pos[1], 'g'), (old_pos[0] - 1, old_pos[1] + 1, 'b')}, 
@@ -426,7 +421,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
                             {(old_pos[0] - 1, old_pos[1] - 1, 'b'), (old_pos[0] - 1, old_pos[1] + 1, 'b')}]
         for element in constraints_list:
             if element.issubset(placed_walls): return True
-    if direction == 'ul':
+    elif direction == 'ul':
         constraints_list = [{(old_pos[0] - 1, old_pos[1] - 1, 'g')}, {(old_pos[0] - 1, old_pos[1] - 1, 'b')},
                             {(old_pos[0], old_pos[1] - 1, 'g'), (old_pos[0] - 1, old_pos[1], 'b')}, 
                             {(old_pos[0] - 2, old_pos[1] - 1, 'g'), (old_pos[0] - 1, old_pos[1] - 2, 'b')}, 
@@ -438,6 +433,7 @@ def is_hitting_any_wall(placed_walls, old_pos, direction):
     return False
 
 def is_walls_overlap(wall: tuple, new_wall: tuple) -> bool:
+    """Returns True if new wall overlaps wall."""
     if wall[0] == new_wall[0] and wall[1] == new_wall[1]: return True
     
     if new_wall[2] == 'g' and wall[2] == 'g':
@@ -459,6 +455,16 @@ def is_figure_out_of_bounds(figure_pos: tuple, board_dim: tuple) -> bool:
     else: return False
       
 def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
+    """Returns str representing movement direction.     \n 
+    u - up                         \n      
+    d - down                       \n      
+    l - left                       \n      
+    r - right                      \n       
+    ul - upper left diagonal       \n
+    ur - upper right diagonal      \n
+    dl - down left diagonal        \n
+    dr - down right diagonal 
+    """
     direction = ""
     if old_pos[0] > figure_pos[0]: direction += "u"
     elif old_pos[0] < figure_pos[0]: direction += "d"
@@ -467,6 +473,8 @@ def get_movement_direction(figure_pos: tuple, old_pos: tuple) -> str:
     return direction
 
 def is_figure_blocking_valid(direction: str, opponent_positions: list, figure_pos: tuple, other_figure:tuple, placed_walls: list) -> list:
+    """Returns True if figure movement (horizontal or vertical) was blocked by some other figure so that it can be moved only by one position instead of two.
+    If no figure is blocking it or the blocking figure is on opponent starting position, or a wall is blocking it, returns False."""
     other_figures = [other_figure, opponent_positions[0], opponent_positions[1]]
     for position in other_figures:
         if direction == 'l':
@@ -490,14 +498,3 @@ def is_figure_blocking_valid(direction: str, opponent_positions: list, figure_po
                     and (figure_pos[0], figure_pos[1], 'b') not in placed_walls):
                 return True
     return False
-    
-    # for position in opponent_positions:
-    #     checklist.append(direction == 'l' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] - 1))
-    #     checklist.append(direction == 'r' and position[0] == figure_pos[0] and position[1] == (figure_pos[1] + 1))
-    #     checklist.append(direction == 'u' and position[0] == (figure_pos[0] - 1) and position[1] == figure_pos[1])
-    #     checklist.append(direction == 'd' and position[0] == (figure_pos[0] + 1) and position[1] == figure_pos[1])
-    # checklist.append(direction == 'l' and other_figure[0] == figure_pos[0] and other_figure[1] == (figure_pos[1] - 1))
-    # checklist.append(direction == 'r' and other_figure[0] == figure_pos[0] and other_figure[1] == (figure_pos[1] + 1))
-    # checklist.append(direction == 'u' and other_figure[0] == (figure_pos[0] - 1) and other_figure[1] == figure_pos[1])
-    # checklist.append(direction == 'd' and other_figure[0] == (figure_pos[0] + 1) and other_figure[1] == figure_pos[1])
-    # return checklist

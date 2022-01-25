@@ -1,8 +1,7 @@
 from asyncio.proactor_events import constants
 from tracemalloc import start
-import faza3
 
-# promena u evaluate(state, starting_pos, board_dim) iz faza3.py
+# promena u evaluate(state, starting_pos, board_dim) iz faza3.py - ubacen wall heuristic
 
 def wall_heuristics(state: dict, starting_pos: dict, board_dim: tuple) -> int:
     player = state['current player']

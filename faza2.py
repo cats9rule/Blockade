@@ -1,6 +1,5 @@
 
 import faza1
-import copy
 import math
 
 def input_move(state: dict, board_dim: tuple, starting_pos: dict) -> dict:
@@ -35,9 +34,11 @@ def get_winner(state: dict) -> str:
     return 'X' if state['current player'] == 'O' else 'O'
 
 def get_next_state(state: dict, move: dict) -> dict:
+    """Returns next state based on current state and move."""
     return faza1.generate_next_state(state, move)
 
 def get_next_state_list(state: dict, board_dim: tuple, starting_pos: dict) -> list:
+    """Returns a list of potential next states for given state."""
     states = []
     possible_figure_moves = []
     player = state['current player']
@@ -46,7 +47,7 @@ def get_next_state_list(state: dict, board_dim: tuple, starting_pos: dict) -> li
         possible_figure_moves += get_figure_moves(
             i, player_pos[player][i], player, player_pos, starting_pos, state['placed walls'], board_dim
             )
-    potential_walls = get_wall_placements(state, board_dim)
+    potential_walls =  get_wall_placements(state, board_dim)
     
     for figure_move in possible_figure_moves:
         if len(potential_walls) == 0:
@@ -63,7 +64,6 @@ def get_next_state_list(state: dict, board_dim: tuple, starting_pos: dict) -> li
         
     return states
     
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -96,7 +96,6 @@ def input_wall(can_green: bool, can_blue: bool) -> tuple:
         col = int(input("> Choose wall column: "))
 
     return (row, col, color)
- 
         
 def input_figure() -> tuple:
     figure_index = -1
@@ -114,7 +113,6 @@ def input_figure() -> tuple:
         col = int(input("> What column? "))
 
     return (row, col, figure_index - 1)
-
 
 def get_figure_moves(figure_index: int, old_pos: tuple, player: str, player_positions:dict, starting_pos:dict, placed_walls:list, board_dim:tuple) -> list:  
     move_list = [(-2, 0), (2, 0), (0, -2), (0, 2), (-1, -1), (-1, 1), (1, 1), (1, -1), (-1, 0), (0, 1), (1, 0), (0, -1)]
@@ -145,7 +143,10 @@ def get_wall_placements(state: dict, board_dim: tuple) -> list:
                     
     return wall_placements
 
-####################################
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
 def h(currentPosition, endPosition):
     x = currentPosition[0] - endPosition[0]
     y = currentPosition[1] - endPosition[1]
@@ -188,7 +189,6 @@ def a_star(start, end, figure_index, player, player_positions, starting_pos, pla
         closed_set.add(node)
     
     return found_end
-
 
 def is_path_available(state, starting_pos, board_dim):
     path_available = True

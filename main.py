@@ -2,7 +2,6 @@ import faza1
 import faza2
 import faza3
 import pyfiglet
-import cProfile
 
 def main():
     # init_params = faza1.define_initial_parameters()
@@ -11,14 +10,14 @@ def main():
     # board_dim = init_params["board_dim"]
     # starting_pos = init_params["starting_pos"]
     # starting_wall_count = init_params["starting_wall_count"]
-
+    
     playing_first = "X"
-    board_dim = (11, 14)
+    board_dim = (5, 4)
     starting_pos = {
-            'X': [(4, 4), (8, 4)],
-            'O': [(4, 11), (8, 11)]
+            'X': [(1, 1), (3, 1)],
+            'O': [(1, 4), (3, 4)]
     }
-    starting_wall_count = 0
+    starting_wall_count = 3
 
     state = faza1.get_initial_state(starting_wall_count, starting_pos, playing_first)
     move = {
@@ -35,7 +34,7 @@ def main():
             state = faza1.generate_next_state(state, move)
             faza1.show_game(state, board_dim, starting_pos)  
         else:
-            state = faza3.computer_move(state, starting_pos, board_dim, 3)
+            state = faza3.computer_move(state, starting_pos, board_dim, 1)
             faza1.show_game(state, board_dim, starting_pos)     
 
     winner = faza2.get_winner(state)

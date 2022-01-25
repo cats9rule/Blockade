@@ -5,36 +5,33 @@ import sys
 import copy
 
 def computer_move(state: dict, starting_pos: dict, board_dim: tuple, depth: int) -> dict:
-    #TODO: play minmax, get new state, return new state
     is_x = True if state['current player'] == 'X' else False
     return minmax(state, depth, is_x, board_dim, starting_pos)
 
 def minmax(state: dict, depth: int, is_player_x: bool, board_dim: tuple, starting_pos: dict) -> dict:
     alpha = (state, -sys.maxsize)
     beta = (state, sys.maxsize)
-    if is_player_x: return max_value(state, copy.deepcopy(alpha), copy.deepcopy(beta), depth, board_dim, starting_pos, depth)[0]
-    else: return min_value(state, copy.deepcopy(alpha), copy.deepcopy(beta), depth, board_dim, starting_pos, depth)[0]
+    if is_player_x: return max_value(state, copy.deepcopy(alpha), copy.deepcopy(beta), depth, board_dim, starting_pos)[0]
+    else: return min_value(state, copy.deepcopy(alpha), copy.deepcopy(beta), depth, board_dim, starting_pos)[0]
     
-def max_value(state: dict, alpha: tuple, beta: tuple, depth: int, board_dim: tuple, starting_pos: dict, max_depth: int) -> int:
+def max_value(state: dict, alpha: tuple, beta: tuple, depth: int, board_dim: tuple, starting_pos: dict) -> int:
     if depth == 0: return (state, evaluate(state, starting_pos, board_dim))
+    opponent = 'X' if state['current player'] == 'O' else 'O'
+    position_backup = copy.deepcopy(state['player positions'][opponent])
     for next_state in faza2.get_next_state_list(state, board_dim, starting_pos):
-        new_alpha = max(alpha, min_value(next_state, copy.deepcopy(alpha), copy.deepcopy(beta), depth-1, board_dim, starting_pos, max_depth), key = lambda x: x[1])
-        if depth == max_depth - 1:
-            alpha = new_alpha
-        else:
-            alpha = (alpha[0], new_alpha[1])
+        alpha = max(alpha, min_value(next_state, copy.deepcopy(alpha), copy.deepcopy(beta), depth-1, board_dim, starting_pos), key = lambda x: x[1])
         if alpha[1] >= beta[1]: return beta
+    alpha[0]['player positions'][opponent] = position_backup
     return alpha
 
-def min_value(state: dict, alpha: tuple, beta: tuple, depth: int, board_dim: tuple, starting_pos: dict, max_depth: int) -> int:
+def min_value(state: dict, alpha: tuple, beta: tuple, depth: int, board_dim: tuple, starting_pos: dict) -> int:
     if depth == 0: return (state, evaluate(state, starting_pos, board_dim))
+    opponent = 'X' if state['current player'] == 'O' else 'O'
+    position_backup = copy.deepcopy(state['player positions'][opponent])
     for next_state in faza2.get_next_state_list(state, board_dim, starting_pos):
-        new_beta = min(beta, max_value(next_state, copy.deepcopy(alpha), copy.deepcopy(beta), depth - 1, board_dim, starting_pos, max_depth), key = lambda x: x[1])
-        if depth == max_depth - 1:
-            beta = new_beta
-        else:
-            beta = (beta[0], new_beta[1])
+        beta = min(beta, max_value(next_state, copy.deepcopy(alpha), copy.deepcopy(beta), depth - 1, board_dim, starting_pos), key = lambda x: x[1])
         if beta[1] <= alpha[1]: return alpha
+    beta[0]['player positions'][opponent] = position_backup
     return beta
     
 def evaluate(state: dict, starting_pos: dict, board_dim: tuple) -> int:
@@ -55,4 +52,3 @@ def evaluate(state: dict, starting_pos: dict, board_dim: tuple) -> int:
         distance_f2 = 1 / min(sqrt((figure_pos[1][0] - opponent_base[0][0]) ** 2 + (figure_pos[1][1] - opponent_base[0][1]) ** 2),
                           sqrt((figure_pos[1][0] - opponent_base[1][0]) ** 2 + (figure_pos[1][1] - opponent_base[1][1]) ** 2))
         return (distance_f1 + distance_f2 + wall_h) * mul
-        # return distance_f1 + distance_f2
